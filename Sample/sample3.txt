@@ -1,0 +1,2 @@
+mousepos 1605 -368.5
+wait 2
