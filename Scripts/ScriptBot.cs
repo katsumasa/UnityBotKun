@@ -905,7 +905,7 @@ namespace Utj
             }
             else if(string.Compare(type,"move") == 0)
             {
-                var position = new Vector2(GetFloat(args[4]), GetFloat(args[5]));
+                var position = new Vector2(GetFloat(args[3]), GetFloat(args[4]));
                 InputBot.instance.SetTouchMove(fingerId,position);
                 if (args.Length == 5)
                 {
@@ -1112,8 +1112,9 @@ namespace Utj
                     }
                     if (line.StartsWith("#"))
                     {
-                        var args = line.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
-                        labelOfsts.Add(args[0], textAssetReader.Position);
+                        //var args = line.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+                        var args = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        labelOfsts.Add(args[1], textAssetReader.Position);
                     }
                     else if (line.StartsWith("int"))
                     {
