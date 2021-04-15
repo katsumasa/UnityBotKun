@@ -97,11 +97,24 @@ namespace Utj
         }
 
 
+        public class TouchEvent
+        {
+            public Touch touch;
+
+
+            public TouchEvent()
+            {
+                touch = new Touch();
+            }
+        }
+
+
+
         //=========================================================================================
         // private変数の定義
         //=========================================================================================
 
-        List<Touch> m_touchEvents;
+        List<TouchEvent> m_touchEvents;
         Dictionary<string, float> m_axisEvents;
         Dictionary<string, bool> m_buttonDownEvents;        
         Touch m_mouseTouch;
@@ -132,7 +145,7 @@ namespace Utj
             }            
             else
             {
-                return m_touchEvents[index];
+                return m_touchEvents[index].touch;
             }                        
         }
 
@@ -360,18 +373,18 @@ namespace Utj
             TouchType type = TouchType.Direct, 
             int tapCount = 1)
         {
-            var touch = new Touch();
-            touch.phase = TouchPhase.Began;
-            touch.position = position;
-            touch.rawPosition = position;
-            touch.maximumPossiblePressure = maximumPossiblePressure;
-            touch.pressure = pressure;
-            touch.radius = radius;
-            touch.radiusVariance = radiusVariance;
-            touch.type = type;
-            touch.tapCount = tapCount;
-            touch.fingerId = fingerId;
-            m_touchEvents.Add(touch);
+            var touchEvent = new TouchEvent();
+            touchEvent.touch.phase = TouchPhase.Began;
+            touchEvent.touch.position = position;
+            touchEvent.touch.rawPosition = position;
+            touchEvent.touch.maximumPossiblePressure = maximumPossiblePressure;
+            touchEvent.touch.pressure = pressure;
+            touchEvent.touch.radius = radius;
+            touchEvent.touch.radiusVariance = radiusVariance;
+            touchEvent.touch.type = type;
+            touchEvent.touch.tapCount = tapCount;
+            touchEvent.touch.fingerId = fingerId;
+            m_touchEvents.Add(touchEvent);
         }
 
 
@@ -390,18 +403,17 @@ namespace Utj
             int tapCount = 1)
         {
             for (var i = 0; i < m_touchEvents.Count; i++)
-            {
-                var touch = m_touchEvents[i];
-                if (touch.fingerId == fingerId)
+            {                
+                if (m_touchEvents[i].touch.fingerId == fingerId)
                 {
-                    touch.maximumPossiblePressure = maximumPossiblePressure;
-                    touch.pressure = pressure;
-                    touch.radius = radius;
-                    touch.radiusVariance = radiusVariance;
-                    touch.deltaPosition = position - touch.position;
-                    touch.position = position;
-                    touch.deltaTime += Time.deltaTime;
-                    touch.phase = TouchPhase.Moved;
+                    m_touchEvents[i].touch.maximumPossiblePressure = maximumPossiblePressure;
+                    m_touchEvents[i].touch.pressure = pressure;
+                    m_touchEvents[i].touch.radius = radius;
+                    m_touchEvents[i].touch.radiusVariance = radiusVariance;
+                    m_touchEvents[i].touch.deltaPosition = position - m_touchEvents[i].touch.position;
+                    m_touchEvents[i].touch.position = position;
+                    m_touchEvents[i].touch.deltaTime += Time.deltaTime;
+                    m_touchEvents[i].touch.phase = TouchPhase.Moved;
                     return;
                 }
             }
@@ -415,11 +427,10 @@ namespace Utj
         public void SetTouchEnded(int fingerId)
         {
             for (var i = 0; i < m_touchEvents.Count; i++)
-            {
-                var touch = m_touchEvents[i];
-                if (touch.fingerId == fingerId)
+            {                
+                if (m_touchEvents[i].touch.fingerId == fingerId)
                 {
-                    touch.phase = TouchPhase.Ended;
+                    m_touchEvents[i].touch.phase = TouchPhase.Ended;
                     return;
                 }
             }
@@ -469,7 +480,7 @@ namespace Utj
             {
                 instance = this;
                 base.Awake();
-                m_touchEvents = new List<Touch>();
+                m_touchEvents = new List<TouchEvent>();
                 m_axisEvents = new Dictionary<string, float>();                
                 m_buttonDownEvents = new Dictionary<string, bool>();
                 m_mouseTouch = new Touch();
@@ -530,26 +541,26 @@ namespace Utj
             {
                 for (var i = 0; i < m_touchEvents.Count; i++)
                 {
-                    var touch = m_touchEvents[i];
-                    switch (touch.phase)
+                    
+                    switch (m_touchEvents[i].touch.phase)
                     {
                         case TouchPhase.Began:
                             {
-                                touch.phase = TouchPhase.Stationary;
+                                m_touchEvents[i].touch.phase = TouchPhase.Stationary;                                
                             }
                             break;
 
                         case TouchPhase.Moved:
                             {
-                                touch.deltaPosition = Vector2.zero;
-                                touch.deltaTime = deltaTime;
-                                touch.phase = TouchPhase.Stationary;
+                                m_touchEvents[i].touch.deltaPosition = Vector2.zero;
+                                m_touchEvents[i].touch.deltaTime = deltaTime;
+                                m_touchEvents[i].touch.phase = TouchPhase.Stationary;
                             }
                             break;
 
                         case TouchPhase.Ended:
                             {
-                                m_touchEvents.Remove(touch);
+                                m_touchEvents.Remove(m_touchEvents[i]);
                             }
                             break;
                     }
