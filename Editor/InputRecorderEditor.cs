@@ -8,6 +8,8 @@ namespace Utj
     [CustomEditor(typeof(InputRecorder))]
     public class InputRecorderEditor : Editor
     {
+        Vector2 m_scrollPosition;
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -32,10 +34,10 @@ namespace Utj
             {
                 string fpath;
 
-                fpath = EditorUtility.SaveFilePanel("Save Script","","","txt");
+                fpath = EditorUtility.SaveFilePanel("Save Script", "", "", "txt");
                 if (!string.IsNullOrEmpty(fpath))
                 {
-                    using(StreamWriter sw = File.CreateText(fpath))
+                    using (StreamWriter sw = File.CreateText(fpath))
                     {
                         sw.Write(inputRecorder.textAsset.ToString());
                         //AssetDatabase.CreateAsset(inputRecorder.textAsset, fpath);
@@ -43,12 +45,18 @@ namespace Utj
 
                 }
             }
-
             GUILayout.EndHorizontal();
-
-
-
             GUI.enabled = true;
+
+            GUILayout.Label("Script:");
+            using (var scope = new GUILayout.ScrollViewScope(m_scrollPosition,GUILayout.Height(100))) {
+                m_scrollPosition = scope.scrollPosition;
+                GUILayout.TextArea(inputRecorder.script);
+            }
+            
+
+
+            
         }
     }
 }

@@ -15,9 +15,19 @@ namespace Utj
             private set;
         }
 
+        public GameObject currentSelectGameObject
+        {
+            get
+            {
+                //return eventSystem.currentSelectedGameObject;
+                return GetCurrentFocusedGameObject();
+            }
+        }
+
 
         protected override void Awake()
         {
+               
             if (instance == null)
             {
                 instance = this;
@@ -33,7 +43,7 @@ namespace Utj
         protected override void Start()
         {
             base.Start();
-            m_InputOverride = DummyInput.instance;
+            m_InputOverride = InputBot.instance;
         }
 
 
@@ -50,5 +60,7 @@ namespace Utj
                 instance = null;
             }
         }
+
+        
     }
 }
