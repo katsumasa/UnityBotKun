@@ -8,7 +8,8 @@ namespace Utj
     [CustomEditor(typeof(ScriptBot))]
     public class ScriptBotEditor : Editor
     {
-        int m_scriptIndex = 0;
+        [SerializeField]
+        int m_scriptIndex;
 
 
         public override void OnInspectorGUI()
@@ -23,11 +24,17 @@ namespace Utj
             var scriptNumbers = new int[scriptBot.scripts.Count];
             for(var i = 0; i < scriptBot.scripts.Count; i++)
             {
-                scriptNames[i] = new GUIContent(scriptBot.scripts[i].name);
+                if (scriptBot.scripts != null)
+                {
+                    scriptNames[i] = new GUIContent(scriptBot.scripts[i].name);
+                }
+                else
+                {
+                    scriptNames[i] = new GUIContent("None");
+                }
                 scriptNumbers[i] = i;
             }
-
-            
+            m_scriptIndex = System.Math.Min(m_scriptIndex, scriptNames.Length);            
             
             GUI.enabled = !scriptBot.isPlay;
             m_scriptIndex =  EditorGUILayout.IntPopup(new GUIContent("Play Script","実行するスクリプトを選択します"), m_scriptIndex, scriptNames, scriptNumbers);

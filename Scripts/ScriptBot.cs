@@ -10,7 +10,7 @@ using UnityEngine.Networking;
 namespace Utj
 {
     /// <summary>
-    /// Script実行システム
+    /// イベントスクリプト実行システム
     /// Programed by Katsumasa Kimura
     /// </summary>
     public class ScriptBot : MonoBehaviour
@@ -24,21 +24,25 @@ namespace Utj
         /// <returns>true:続行 fale:中断</returns>
         delegate bool CommandFunction(string[] args);
 
+        
         /// <summary>
         /// コマンド毎に割り当てられたファンクションのDictionary
         /// </summary>
         Dictionary<string, CommandFunction> commandFunctons;
 
+        
         /// <summary>
         /// Scriptの配列
         /// </summary>
         [SerializeField] List<TextAsset> m_scripts;
 
+        
         /// <summary>
         /// TextAssetReader
         /// </summary>
         TextAssetReader textAssetReader;
         
+
         /// <summary>
         /// スクリプトの実行位置
         /// </summary>
@@ -57,14 +61,14 @@ namespace Utj
             }
         }
 
+
         /// <summary>
         /// スクリプトの最大位置
         /// </summary>
         public long maxPosition
         {
             get;
-            private set;
-            
+            private set;            
         }
 
 
@@ -74,12 +78,14 @@ namespace Utj
         /// 
         Dictionary<string, long> m_labelOfsts;
 
+
         /// <summary>
         /// ユーザー変数の保管場所
         /// key:変数名
         /// value: 変数値
         /// </summary>
         Dictionary<string, int> m_varInts;
+
 
         /// <summary>
         /// ユーザー変数の保管場所
@@ -88,25 +94,30 @@ namespace Utj
         /// </summary>
         Dictionary<string, float> m_varFloats;
 
+
         /// <summary>
         /// スクリプトの実行を待機するフレーム数
         /// </summary>
         int m_waitFrame;
 
+
         /// <summary>
-        /// スクリプトの実行を待機するフレーム数
+        /// スクリプトの実行を待機する時間
         /// </summary>
         float m_waitTime;
+
 
         /// <summary>
         /// InputBot.instance.isOverrideInputの値の退避先
         /// </summary>
         bool m_overrideInputBackup;
 
+
         /// <summary>
         /// 実行を停止する
         /// </summary>
         bool m_isStop;
+
 
         /// <summary>
         /// スクリプトが再生中であるか否か
@@ -117,7 +128,6 @@ namespace Utj
         }
         
         
-
         /// <summary>
         /// エラーが発生したか否か
         /// </summary>
@@ -127,9 +137,16 @@ namespace Utj
             private set;
         }
 
-        public bool isAutoStart = false;
+
+        /// <summary>
+        /// 自動的に再生を実行するか否か
+        /// </summary>
+        public bool isAutoPlay = false;
 
 
+        /// <summary>
+        /// イベントスクリプトのコレクション
+        /// </summary>
         public List<TextAsset> scripts
         {
             get
@@ -140,12 +157,17 @@ namespace Utj
                 }
                 return m_scripts;
             }
+
             private set
             {
                 m_scripts = value;
             }
         }
 
+
+        /// <summary>
+        /// ラベルオフセットのコレクション
+        /// </summary>
         Dictionary<string, long> labelOfsts
         {
             get {
@@ -163,6 +185,9 @@ namespace Utj
         }
 
 
+        /// <summary>
+        /// int型変数のコレクション
+        /// </summary>
         Dictionary<string, int> varInts
         {
             get
@@ -180,6 +205,10 @@ namespace Utj
             }
         }
 
+
+        /// <summary>
+        /// float型変数のコレクション
+        /// </summary>
         Dictionary<string, float> varFloats
         {
             get
@@ -199,7 +228,7 @@ namespace Utj
 
 
         /// <summary>
-        /// 
+        /// ScriptBotのインスタンス
         /// </summary>
         public static ScriptBot instance
         {
@@ -293,7 +322,7 @@ namespace Utj
         // Start is called before the first frame update
         IEnumerator Start()
         {
-            if (isAutoStart)
+            if (isAutoPlay)
             {
                 while (true)
                 {
@@ -402,6 +431,7 @@ namespace Utj
             }
             return arg;
         }
+
 
         /// <summary>
         /// 変数の代入 A = B
@@ -577,6 +607,7 @@ namespace Utj
             return true;
         }
 
+
         /// <summary>
         /// 乗算 A = B * C
         /// </summary>
@@ -599,6 +630,7 @@ namespace Utj
             }
             return true;
         }
+
 
         /// <summary>
         /// 除算 A = B / C
@@ -756,7 +788,6 @@ namespace Utj
         }
 
 
-
         /// <summary>
         /// if A > B then xxx
         /// </summary>
@@ -788,6 +819,7 @@ namespace Utj
             }
             return true;
         }
+
 
         /// <summary>
         /// if A >= B then xxxx.
@@ -972,6 +1004,7 @@ namespace Utj
             return true;
         }
 
+
         /// <summary>
         /// Mouseボタンの入力
         /// </summary>
@@ -1080,20 +1113,112 @@ namespace Utj
                 {
                     continue;
                 }
-                
-                // 字句解析
-                var args = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                
+
+                // 字句解析            
+                //var args = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] args;
+                LexicalAnalysis(line, out args);
+
                 // 構文解析
                 if (SyntaxAnalysis(args) == false) {
                     break;
                 }
             }
         }
-        
+
 
         /// <summary>
-        /// 前処理
+        /// 字句解析
+        /// </summary>
+        /// <param name="line">１行分の文字列</param>
+        /// <param name="args">字句に分割された文字列の配列</param>
+        void LexicalAnalysis(string line,out string[] args)
+        {
+#if true
+            // スクリプト内で文字列が使えるようになったので、字句解析が複雑になった為、
+            // 単純にTrimとSplitを行うという訳には行かなくなった
+            StringBuilder sb = new StringBuilder();
+            var list = new List<string>();
+            int step = 0;
+
+
+            foreach(var ch in line)
+            {
+                switch (step)
+                {                    
+                    case 0:
+                        // 冒頭の処理
+                        {
+                            // 冒頭の空白文字を削除
+                            if (ch == ' ')
+                            {
+                                continue;
+                            }
+                            // ダブルクォーテーション
+                            else if (ch == '"')
+                            {
+                                sb.Clear();
+                                sb.Append(ch);
+                                step = 1;
+                            }
+                            // 通常の文字
+                            else
+                            {
+                                sb.Clear();
+                                sb.Append(ch);
+                                step = 2;
+                            }
+                        }
+                        break;
+
+                    case 1:
+                        // ダブルクォーテーションで括られてた部分の処理
+                        {
+                            sb.Append(ch);
+                            if(ch == '"')
+                            {                                
+                                list.Add(sb.ToString());
+                                sb.Clear();
+                                step = 0;
+                            }
+                        }
+                        break;
+
+                    case 2:
+                        // 通常の字句として処理
+                        {
+                            if (ch == ' ')
+                            {
+                                list.Add(sb.ToString());
+                                sb.Clear();
+                                step = 0;
+                            }
+                            else
+                            {
+                                sb.Append(ch);
+                            }
+                        }
+                        break;
+                }
+            }
+
+            // 最後の字句が空白で無い場合は追加
+            var word = sb.ToString();
+            if(!string.IsNullOrEmpty(word) && !string.IsNullOrWhiteSpace(word)){
+                list.Add(word);
+            }
+            args = list.ToArray();
+#else
+            // スペースで分割する
+            // var words = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);            
+            // args = list.ToArray();
+#endif
+        }
+
+
+        /// <summary>
+        /// プリプロセス処理
+        /// ラベルや変数を処理する
         /// </summary>
         void PreProcessor()
         {
@@ -1147,12 +1272,5 @@ namespace Utj
                 textAssetReader.Seek(0, SeekOrigin.Begin);
             }
         }
-
-
-
-
-    }
-
-
-    
+    }    
 }
