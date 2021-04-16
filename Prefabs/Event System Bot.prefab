@@ -83,7 +83,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_scripts:
-  - {fileID: 4900000, guid: bb912508f15f7f84b9c736bbbf54df7c, type: 3}
+  - {fileID: 0}
   m_currentScriptIndex: 0
   m_isPlay: 0
   m_isAutoPlay: 0

@@ -10,50 +10,60 @@ namespace Utj
     /// </summary>
     [CustomEditor(typeof(ScriptBot))]
     public class ScriptBotEditor : Editor
-    {             
+    {
+        
+
+        public void Awake()
+        {
+        }
+
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
             base.OnInspectorGUI();
 
+            var scriptIdxProperty = serializedObject.FindProperty("m_currentScriptIndex");
+            var scriptsProperty = serializedObject.FindProperty("m_scripts");
+            var isPlayProperty = serializedObject.FindProperty("m_isPlay");
+
+
             var scriptBot = target as ScriptBot;
+            
+            var index = scriptIdxProperty.intValue;                     
+            var n = scriptsProperty.arraySize;
+            var scriptNames = new GUIContent[n];
+            var scriptNumbers = new int[n];
 
-            var serializedProperty = serializedObject.FindProperty("m_currentScriptIndex");
-            var index = serializedProperty.intValue;
-
-            var scriptNames = new GUIContent[scriptBot.scripts.Count];
-            var scriptNumbers = new int[scriptBot.scripts.Count];
-            for(var i = 0; i < scriptBot.scripts.Count; i++)
+            for (var i = 0; i < n; i++)
             {
-                if (scriptBot.scripts != null)
+                var item = scriptsProperty.GetArrayElementAtIndex(i);
+                if (item.objectReferenceValue != null)
                 {
-                    scriptNames[i] = new GUIContent(scriptBot.scripts[i].name);
+                    var text = new SerializedObject(item.objectReferenceValue);
+                    var nameProperty = text.FindProperty("m_Name");
+                    scriptNames[i] = new GUIContent(nameProperty.stringValue);
                 }
                 else
                 {
-                    scriptNames[i] = new GUIContent("None");
+                    scriptNames[i] = new GUIContent("None (Text Asset)");
                 }
                 scriptNumbers[i] = i;
             }
-            index = System.Math.Min(index, scriptNames.Length);
-
-
-            var isPlay = serializedObject.FindProperty("m_isPlay").boolValue;
-
-
+            
+            var isPlay = isPlayProperty.boolValue;
             GUI.enabled = !isPlay;
             EditorGUI.BeginChangeCheck();
             index =  EditorGUILayout.IntPopup(new GUIContent("Play Script","実行するスクリプトを選択します"), index, scriptNames, scriptNumbers);
-            if (EditorGUI.EndChangeCheck()) {                         
-                serializedProperty.intValue = index;
+            if (EditorGUI.EndChangeCheck()) {
+                scriptIdxProperty.intValue = index;
                 serializedObject.ApplyModifiedProperties();
             }
-
 
             GUILayout.BeginHorizontal();
             GUI.enabled = !isPlay && Application.isPlaying;
             if (GUILayout.Button(new GUIContent("Play", "スクリプトを実行します")))
             {
-                    scriptBot.Play(index);
+                scriptBot.Play(index);
             }
 
             GUI.enabled = isPlay && Application.isPlaying;
