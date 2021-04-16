@@ -1,41 +1,64 @@
-﻿::: LEGOのステージのAUTO PLAYスクリプト :::
+﻿::: LEGO Explore the Islandの初めのステージを進め為のスクリプト
 
 ::: START
 
 int loop 0
 
-#開始地点
+# 開始地点
 print "Start"
 
-axis Horizontal 0.5 2.0
-axis Vertical   0.5 2.0
-wait 2.0
+axisraw horizontal 0.5
+axisraw vertical   0.5
+wait sec 2.0
 
-axis Vertical   0.5 1.0
-wait 2.0
+axisraw horizontal 0
+axisraw vertical   0.5
+wait sec 1.0
 
-::: 橋を飛び越える
-axis Horizontal 0.5 0.5
-axis Vertical   0.2 0.5
-button Jump 0.5
+print "橋を飛び越える"
+axisraw horizontal 0.5 
+axisraw vertical   0.2
+button jump down
+wait sec 0.5
 
-wait 2.0
+print "前進"
+button jump up
+axisraw horizontal 1.0
+axisraw vertical   1.0
+wait sec 1.5
 
-axis Horizontal 0.5 0.7
-axis Vertical   0.2 0.7
-wait 1.0
 
-axis Vertical 0.5 2.0
-axis Horizontal 0.5 0.8
-wait 2.0
+axisraw horizontal 0
+axisraw vertical  1.0
+wait sec 0.5
 
-::: ２個目の橋を飛び越える
-axis Horizontal 0.5 1.0
-axis Vertical   0.2 1.0
-button Jump 0.5
-wait 0.5
+axisraw vertical  0
 
-axis Vertical 0.5 4.0
-wait 4.0
+axisraw horizontal 1.0
+axisraw vertical  1.0
+wait sec 0.75
 
-axis Horizontal -0.5 1.0
+axisraw horizontal 0
+axisraw vertical  0
+
+axisraw horizontal 1.0
+axisraw vertical  1.0
+button jump down
+wait sec 0.5
+
+axisraw horizontal 0
+axisraw vertical  0
+button jump up
+
+axisraw horizontal 1.0
+axisraw vertical  1.0
+wait sec 2.0
+
+axisraw horizontal -1.0
+axisraw vertical  1.0
+wait sec 2.0
+
+axisraw horizontal 0
+axisraw vertical  0
+
+
