@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3173145380119561285}
   - component: {fileID: 6691819720225521364}
   - component: {fileID: 1618333964946239649}
+  - component: {fileID: -8133448760018077855}
   m_Layer: 0
   m_Name: Event System Bot
   m_TagString: Untagged
@@ -83,7 +84,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_scripts:
   - {fileID: 4900000, guid: bb912508f15f7f84b9c736bbbf54df7c, type: 3}
-  isAutoPlay: 0
+  m_currentScriptIndex: 0
+  m_isPlay: 0
+  m_isAutoPlay: 0
 --- !u!114 &6691819720225521364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,6 +116,7 @@ MonoBehaviour:
   m_isRecordAxisRaw: 1
   m_isRecordMouse: 1
   m_isRecordTouch: 1
+  script: 
 --- !u!114 &1618333964946239649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,3 +131,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_isOverrideInput: 0
   m_isEnableTouchSimulation: 0
+--- !u!114 &-8133448760018077855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618333964946239648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50eeb91ad63548c479ac1c3e60d0724a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_isDontDestroyOnLoad: 1
