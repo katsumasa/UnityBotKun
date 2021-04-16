@@ -512,13 +512,9 @@ namespace Utj
              
         }
 
-        
-        /// <summary>
-        /// Update
-        /// </summary>
-        void Update()
+        private void FixedUpdate()
         {
-            var deltaTime = Time.deltaTime;                        
+            var deltaTime = Time.fixedDeltaTime;
             if (isEnableTouchSimulation)
             {
                 UpdateMouseTouch(deltaTime);

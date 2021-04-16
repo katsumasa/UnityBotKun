@@ -196,8 +196,8 @@ namespace Utj
         }
 
 
-        // Update is called once per frame
-        void Update()
+        
+        void FixedUpdate()
         {
             if (isRecording)
             {
@@ -215,10 +215,11 @@ namespace Utj
             {
                 if (m_waitType == Wait.Sec)
                 {
-                    m_stringWriter.WriteLine("wait \"sec\" {0}", m_waitTime);
-                } else
+                    m_stringWriter.WriteLine("wait sec {0}", m_waitTime);
+                }
+                else
                 {
-                    m_stringWriter.WriteLine("wait \"frame\" {0}", m_waitCount);
+                    m_stringWriter.WriteLine("wait frame {0}", m_waitCount);
                 }
                 m_isAddWait = false;
                 m_waitCount = 1;
@@ -229,6 +230,9 @@ namespace Utj
                 m_waitCount++;
                 m_waitTime += Time.fixedDeltaTime;
             }
+
+
+
             if (m_isRecordAxisRaw)
             {
                 m_isAddWait |= AxisRawEventRecorder();
@@ -246,6 +250,9 @@ namespace Utj
                 m_isAddWait |= MouseEventRecorder();
             }
 
+
+            
+
             script = m_stringWriter.ToString();
         }
 
@@ -261,12 +268,12 @@ namespace Utj
                 // BaseInputにはGetButtonUpが存在しない為、Inputを使用する
                 if (Input.GetButtonDown(buttonName))
                 {
-                    m_stringWriter.WriteLine("button \"down\" \"{0}\"", buttonName);
+                    m_stringWriter.WriteLine("button {0} down", buttonName);
                     ret = true;
                 }
                 else if (Input.GetButtonUp(buttonName))
                 {
-                    m_stringWriter.WriteLine("button \"up\" \"{0}\"", buttonName);
+                    m_stringWriter.WriteLine("button {0} up", buttonName);
                     ret = true;
                 }                
             }
@@ -287,7 +294,7 @@ namespace Utj
                 if (axis != m_axisValues[i] || m_isCompress == false)
                 {
                     m_axisValues[i] = axis;
-                    m_stringWriter.WriteLine("axisraw \"{0}\" {1}", name, axis);
+                    m_stringWriter.WriteLine("axisraw {0} {1}", name, axis);
                     result = true;
                 }
             }
@@ -387,12 +394,12 @@ namespace Utj
                 {
                     if (InputBot.instance.GetMouseButtonDown(i))
                     {
-                        m_stringWriter.WriteLine("mousebutton \"down\" {0}", i);
+                        m_stringWriter.WriteLine("mousebutton {0} down", i);
                         result = true;
                     }
                     else if (InputBot.instance.GetMouseButtonUp(i))
                     {
-                        m_stringWriter.WriteLine("mousebutton \"up\" {0}", i);
+                        m_stringWriter.WriteLine("mousebutton {0} up", i);
                         result = true;
                     }
                 }

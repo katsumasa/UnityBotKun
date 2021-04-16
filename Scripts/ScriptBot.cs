@@ -398,7 +398,8 @@ namespace Utj
 
 
         // Update is called once per frame
-        void Update()
+        //void Update()
+        void FixedUpdate()
         {                        
             Interpreter();
         }
@@ -1039,13 +1040,13 @@ namespace Utj
         /// Buttonの入力
         /// </summary>
         /// <param name="args[0]">button</param>
-        /// <param name="args[1]">down or up</param>
-        /// <param name="args[2]">"buttonName"</param>
+        /// <param name="args[1]">"buttonName"</param>
+        /// <param name="args[2]">down or up</param>
         /// <returns></returns>
         bool CommandButton(string[] args)
         {
-            var type = GetString(args[1]);
-            var name = GetString(args[2]);
+            var name = GetString(args[1]);
+            var type = GetString(args[2]);            
             bool isDown = string.Compare(type,"down") == 0;
             InputBot.instance.SetButtonDown(name, isDown);
             return true;
@@ -1071,19 +1072,19 @@ namespace Utj
         /// Mouseボタンの入力
         /// </summary>
         /// <param name="args[0]">mousebutton</param>        
-        /// <param name="args[1]">down or up</param>
-        /// <param name="args[2]">ボタン番号</param>
+        /// <param name="args[1]">ボタン番号</param>
+        /// <param name="args[2]">down or up</param>
         /// <returns></returns>
         bool CommandMouseButton(string[] args)
         {
-            var type = GetString(args[1]);
+            var type = GetString(args[2]);
             if (string.Compare(type,"down") == 0)
             {
-                InputBot.instance.SetMouseButtonDown(GetInt(args[2]));
+                InputBot.instance.SetMouseButtonDown(GetInt(args[1]));
             }
             else
             {
-                InputBot.instance.SetMouseButtonUp(GetInt(args[2]));
+                InputBot.instance.SetMouseButtonUp(GetInt(args[1]));
             }
             return true;
         }
@@ -1144,7 +1145,7 @@ namespace Utj
             }
 
             m_waitFrame--;
-            m_waitTime -= Time.deltaTime;
+            m_waitTime -= Time.fixedDeltaTime;
             if (m_waitFrame > 0 || (m_waitTime > 0f))
             {
                 return;
