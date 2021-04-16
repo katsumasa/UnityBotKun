@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1618333964946239653}
   - component: {fileID: 1618333964946239652}
   - component: {fileID: 1618333964946239654}
-  - component: {fileID: 1618333964946239649}
   - component: {fileID: 3173145380119561285}
   - component: {fileID: 6691819720225521364}
+  - component: {fileID: 1618333964946239649}
   m_Layer: 0
   m_Name: Event System Bot
   m_TagString: Untagged
@@ -69,20 +69,6 @@ MonoBehaviour:
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
---- !u!114 &1618333964946239649
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1618333964946239648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62595b2995fa3bf4c8925778d788d870, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_isOverrideInput: 0
-  m_isEnableTouchSimulation: 0
 --- !u!114 &3173145380119561285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,8 +81,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ed3ed804f10fb8488aca54fe280ff19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_scripts: []
-  isAutoStart: 0
+  m_scripts:
+  - {fileID: 4900000, guid: bb912508f15f7f84b9c736bbbf54df7c, type: 3}
+  isAutoPlay: 0
 --- !u!114 &6691819720225521364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,8 +106,24 @@ MonoBehaviour:
   - Jump
   - Cancel
   - Submit
+  m_waitType: 0
+  m_isEnablePositionToGameObject: 0
   m_isCompress: 1
   m_isRecordButton: 1
   m_isRecordAxisRaw: 1
   m_isRecordMouse: 1
   m_isRecordTouch: 1
+--- !u!114 &1618333964946239649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618333964946239648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62595b2995fa3bf4c8925778d788d870, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_isOverrideInput: 0
+  m_isEnableTouchSimulation: 0

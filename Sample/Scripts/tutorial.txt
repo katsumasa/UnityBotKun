@@ -1,19 +1,29 @@
 ﻿::: Script Bot Scriptチュートリアル
 
 
-::: int型とfloat型の変数が使用出来ます。
+::: int型,float型,string型の変数が使用出来ます。
 int i1 2
 float f1 1.0
+string str1 "Hello"
 
 ::: printコマンドで変数・数値・文字列をコンソールに出力することが出来ます。
 print "i1:" i1
 print "f1:" f1
+print str1 "World"
 
 ::: 変数は他の変数に代入出来ます
 int i2 0
 print "i2:" i2
 set i2 i1
 print "i2:" i2
+
+string str2 "World"
+set str1 str2
+print str1
+set str1 "Hello"
+print str1
+
+
 
 ::: 変数と数値を使用して四則演算が出来ます
 
@@ -22,6 +32,11 @@ int i3
 print "i3=i2(" i2 ")+3"  
 add i3 i2 3
 print "i3:" i3
+
+add str1 str1 str2
+print str1
+
+::: string型は加算のみ対応しています
 
 ::: 減算
 sub i3 i2 1
@@ -120,4 +135,13 @@ wait "sec" 0.5
 touch "move" 0 200.0 10.0
 wait "sec" 0.5
 touch "ended" 0
+wait "sec" 0.5
+
+::: string型を指定することも可能
+
+button down jump
+wait frame 3
+
+button up jump
+wait frame 3
 

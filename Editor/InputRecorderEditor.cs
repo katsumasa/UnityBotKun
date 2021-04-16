@@ -47,13 +47,13 @@ namespace Utj
             }
             GUILayout.EndHorizontal();
             GUI.enabled = true;
-
+#if false
             GUILayout.Label("Script:");
             using (var scope = new GUILayout.ScrollViewScope(m_scrollPosition,GUILayout.Height(100))) {
                 m_scrollPosition = scope.scrollPosition;
                 GUILayout.TextArea(inputRecorder.script);
             }
-            
+#endif   
 
 
             

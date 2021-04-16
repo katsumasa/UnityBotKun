@@ -24,6 +24,8 @@ namespace Utj
             Sec,
         };
 
+        [Header("Axes")]
+
         [SerializeField, Tooltip("記録するAxisの名称")]
         string[] m_axisNames =
         {
@@ -42,6 +44,7 @@ namespace Utj
             "Submit",
         };
 
+        [Header("Recorder Settings")]
         [SerializeField, Tooltip("waitをどの方式で記録するか")]
         Wait m_waitType = Wait.Frame;
 
@@ -92,6 +95,7 @@ namespace Utj
             set { m_isCompress = value; }
         }
 
+#if false
         public string script
         {
             get
@@ -105,6 +109,10 @@ namespace Utj
                 }
             }
         }
+#else
+        [TextArea(3,5)]
+        public string script;
+#endif
 
         /// <summary>
         /// スクリプト書き込み用
@@ -237,6 +245,8 @@ namespace Utj
             {
                 m_isAddWait |= MouseEventRecorder();
             }
+
+            script = m_stringWriter.ToString();
         }
 
 
