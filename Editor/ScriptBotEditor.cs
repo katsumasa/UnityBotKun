@@ -5,20 +5,20 @@ using UnityEditor;
 
 namespace Utj
 {
+    /// <summary>
+    /// ScriptBotのInspector表示をカスタマイズするClass
+    /// </summary>
     [CustomEditor(typeof(ScriptBot))]
     public class ScriptBotEditor : Editor
-    {
-        [SerializeField]
-        int m_scriptIndex;
-
-
+    {             
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
             var scriptBot = target as ScriptBot;
 
-            
+            var serializedProperty = serializedObject.FindProperty("m_currentScriptIndex");
+            var index = serializedProperty.intValue;
 
             var scriptNames = new GUIContent[scriptBot.scripts.Count];
             var scriptNumbers = new int[scriptBot.scripts.Count];
@@ -34,19 +34,29 @@ namespace Utj
                 }
                 scriptNumbers[i] = i;
             }
-            m_scriptIndex = System.Math.Min(m_scriptIndex, scriptNames.Length);            
-            
-            GUI.enabled = !scriptBot.isPlay;
-            m_scriptIndex =  EditorGUILayout.IntPopup(new GUIContent("Play Script","実行するスクリプトを選択します"), m_scriptIndex, scriptNames, scriptNumbers);
+            index = System.Math.Min(index, scriptNames.Length);
 
-            GUILayout.BeginHorizontal();
-            GUI.enabled = !scriptBot.isPlay && Application.isPlaying;
-            if (GUILayout.Button(new GUIContent("Play", "スクリプトを実行します")))
-            {
-                    scriptBot.Play(m_scriptIndex);
+
+            var isPlay = serializedObject.FindProperty("m_isPlay").boolValue;
+
+
+            GUI.enabled = !isPlay;
+            EditorGUI.BeginChangeCheck();
+            index =  EditorGUILayout.IntPopup(new GUIContent("Play Script","実行するスクリプトを選択します"), index, scriptNames, scriptNumbers);
+            if (EditorGUI.EndChangeCheck()) {                         
+                serializedProperty.intValue = index;
+                serializedObject.ApplyModifiedProperties();
             }
 
-            GUI.enabled = scriptBot.isPlay;
+
+            GUILayout.BeginHorizontal();
+            GUI.enabled = !isPlay && Application.isPlaying;
+            if (GUILayout.Button(new GUIContent("Play", "スクリプトを実行します")))
+            {
+                    scriptBot.Play(index);
+            }
+
+            GUI.enabled = isPlay && Application.isPlaying;
             if (GUILayout.Button(new GUIContent("Stop","スクリプトの実行を停止します")))
             {
                 scriptBot.Stop();

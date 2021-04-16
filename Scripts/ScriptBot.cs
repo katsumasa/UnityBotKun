@@ -28,42 +28,47 @@ namespace Utj
         /// <summary>
         /// コマンド毎に割り当てられたファンクションのDictionary
         /// </summary>
-        Dictionary<string, CommandFunction> commandFunctons;
+        Dictionary<string, CommandFunction> m_commandFunctons;
 
         
         /// <summary>
         /// Scriptの配列
         /// </summary>
-        [SerializeField] List<TextAsset> m_scripts;
+        [SerializeField,Tooltip("実行するスクリプトの配列")] List<TextAsset> m_scripts;
 
         
         /// <summary>
         /// TextAssetReader
         /// </summary>
-        TextAssetReader textAssetReader;
-        
+        TextAssetReader m_textAssetReader;
 
         /// <summary>
-        /// スクリプトの実行位置
+        /// 現在選択されているスクリプト番号(Debug用)
+        /// </summary>
+        [SerializeField,HideInInspector]
+        int m_currentScriptIndex;
+
+        /// <summary>
+        /// スクリプトの実行位置(Debug用)
         /// </summary>
         public long currentPosition
         {
             get
             {
-                if (textAssetReader == null)
+                if (m_textAssetReader == null)
                 {
                     return 0;
                 }
                 else
                 {
-                    return textAssetReader.Position;
+                    return m_textAssetReader.Position;
                 }
             }
         }
 
 
         /// <summary>
-        /// スクリプトの最大位置
+        /// スクリプトの最大位置(デバック用)
         /// </summary>
         public long maxPosition
         {
@@ -75,7 +80,6 @@ namespace Utj
         /// <summary>
         /// ジャンプ先のオフセットを保管場所
         /// </summary>
-        /// 
         Dictionary<string, long> m_labelOfsts;
 
 
@@ -84,7 +88,7 @@ namespace Utj
         /// key:変数名
         /// value: 変数値
         /// </summary>
-        Dictionary<string, int> m_varInts;
+        Dictionary<string, int> m_variableInts;
 
 
         /// <summary>
@@ -92,7 +96,13 @@ namespace Utj
         /// key:変数名
         /// value: 変数値
         /// </summary>
-        Dictionary<string, float> m_varFloats;
+        Dictionary<string, float> m_variableFloats;
+
+
+        /// <summary>
+        /// string型変数のコレクション
+        /// </summary>
+        Dictionary<string, string> m_variableStrings;
 
 
         /// <summary>
@@ -118,13 +128,15 @@ namespace Utj
         /// </summary>
         bool m_isStop;
 
+        [SerializeField,HideInInspector]
+        bool m_isPlay;
 
         /// <summary>
         /// スクリプトが再生中であるか否か
         /// </summary>
         public bool isPlay {
-            get;
-            private set;
+            get { return m_isPlay; }
+            private set { m_isPlay = value; }
         }
         
         
@@ -141,7 +153,15 @@ namespace Utj
         /// <summary>
         /// 自動的に再生を実行するか否か
         /// </summary>
-        public bool isAutoPlay = false;
+        [SerializeField, Tooltip("Auto Playを実行する")]
+        bool m_isAutoPlay;
+        
+
+        public bool isAutoPlay
+        {
+            get { return m_isAutoPlay; }
+            set { m_isAutoPlay = value; }
+        }
 
 
         /// <summary>
@@ -188,20 +208,20 @@ namespace Utj
         /// <summary>
         /// int型変数のコレクション
         /// </summary>
-        Dictionary<string, int> varInts
+        Dictionary<string, int> variableInts
         {
             get
             {
-                if (m_varInts == null)
+                if (m_variableInts == null)
                 {
-                    m_varInts = new Dictionary<string, int>();
+                    m_variableInts = new Dictionary<string, int>();
                 }
-                return m_varInts;
+                return m_variableInts;
             }
 
             set
             {
-                m_varInts = value;
+                m_variableInts = value;
             }
         }
 
@@ -209,20 +229,41 @@ namespace Utj
         /// <summary>
         /// float型変数のコレクション
         /// </summary>
-        Dictionary<string, float> varFloats
+        Dictionary<string, float> variableFloats
         {
             get
             {
-                if (m_varFloats == null)
+                if (m_variableFloats == null)
                 {
-                    m_varFloats = new Dictionary<string, float>();
+                    m_variableFloats = new Dictionary<string, float>();
                 }
-                return m_varFloats;
+                return m_variableFloats;
             }
 
             set
             {
-                m_varFloats = value;
+                m_variableFloats = value;
+            }
+        }
+
+
+        /// <summary>
+        /// string型の変数のコレクション
+        /// </summary>
+        Dictionary<string,string> variableStrings
+        {
+            get
+            {
+                if(m_variableStrings == null)
+                {
+                    m_variableStrings = new Dictionary<string, string>();
+                }
+                return m_variableStrings;
+            }
+
+            set
+            {
+                m_variableStrings = value;
             }
         }
 
@@ -258,14 +299,17 @@ namespace Utj
         /// </summary>
         public void Play(int index = 0)
         {
-            textAssetReader = new TextAssetReader(scripts[index]);
-            textAssetReader.Position = 0;
+            m_textAssetReader = new TextAssetReader(scripts[index]);
+            m_textAssetReader.Position = 0;
             m_waitFrame = 0;
             isPlay = true;
             m_isStop= false;
             isError = false;
             m_overrideInputBackup = InputBot.instance.isOverrideInput;
             InputBot.instance.isOverrideInput = true;
+
+
+
             PreProcessor();            
         }
 
@@ -278,19 +322,22 @@ namespace Utj
             m_isStop = true;
         }
 
+
         private void Awake()
         {
             if (instance == null)
             {
                 instance = this;
-                labelOfsts = new Dictionary<string, long>();
-                varInts = new Dictionary<string, int>();
-                varFloats = new Dictionary<string, float>();
+                m_labelOfsts = new Dictionary<string, long>();
+                m_variableInts = new Dictionary<string, int>();
+                m_variableFloats = new Dictionary<string, float>();
+                m_variableStrings = new Dictionary<string, string>();
                 isError = false;
                 isPlay = false;
 
+
                 // CommandFunctionのテーブルを作成する
-                commandFunctons = new Dictionary<string, CommandFunction>()
+                m_commandFunctons = new Dictionary<string, CommandFunction>()
                 {
                     {"wait", CommandWait},
                     {"goto", CommandGoto},
@@ -319,10 +366,11 @@ namespace Utj
             }
         }
 
+
         // Start is called before the first frame update
         IEnumerator Start()
         {
-            if (isAutoPlay)
+            if (m_isAutoPlay)
             {
                 while (true)
                 {
@@ -330,7 +378,8 @@ namespace Utj
                     {                        
                         Play();
                         break;
-                    } else
+                    }
+                    else
                     {
                         yield return new WaitForSeconds(0.16f);
                     }
@@ -362,11 +411,11 @@ namespace Utj
         /// <returns>true:存在する</returns>
         bool IsVariable(string name)
         {
-            if (varInts != null && varInts.ContainsKey(name))
+            if (variableInts != null && variableInts.ContainsKey(name))
             {
                 return true;
             }
-            else if(varFloats != null && varFloats.ContainsKey(name))
+            else if(variableFloats != null && variableFloats.ContainsKey(name))
             {
                 return true;
             }
@@ -381,13 +430,13 @@ namespace Utj
         /// <returns>int型の数値</returns>
         int GetInt(string name)
         {
-            if (varInts != null && varInts.ContainsKey(name))
+            if (variableInts != null && variableInts.ContainsKey(name))
             {
-                return varInts[name];
+                return variableInts[name];
             }
-            else if (varFloats != null && varFloats.ContainsKey(name))
+            else if (variableFloats != null && variableFloats.ContainsKey(name))
             {
-                return (int)varFloats[name];
+                return (int)variableFloats[name];
             }
             else
             {
@@ -403,13 +452,13 @@ namespace Utj
         /// <returns></returns>
         float GetFloat(string name)
         {
-            if (varInts != null && varInts.ContainsKey(name))
+            if (variableInts != null && variableInts.ContainsKey(name))
             {
-                return (float)varInts[name];
+                return (float)variableInts[name];
             }
-            else if (varFloats != null && varFloats.ContainsKey(name))
+            else if (variableFloats != null && variableFloats.ContainsKey(name))
             {
-                return varFloats[name];
+                return variableFloats[name];
             }
             else
             {
@@ -425,7 +474,18 @@ namespace Utj
         /// <returns>文字列</returns>
         string GetString(string arg)
         {
-            if (arg.StartsWith("\""))
+            if (variableStrings.ContainsKey(arg))
+            {
+                return variableStrings[arg];
+            }
+            else if(variableInts.ContainsKey(arg)){
+                return variableInts[arg].ToString();
+            }
+            else if (variableFloats.ContainsKey(arg))
+            {
+                return variableFloats[arg].ToString();
+            }
+            else if (arg.StartsWith("\""))
             {
                 return arg.Trim(new char[] { '"' });
             }
@@ -441,13 +501,18 @@ namespace Utj
         /// <param name="value">値</param>
         void SetValue<T>(string name,T value) where T : IConvertible
         {
-            if (varInts != null && varInts.ContainsKey(name))
+            if (variableInts != null && variableInts.ContainsKey(name))
             {
-                varInts[name] = (int)Convert.ChangeType(value,typeof(int));
+                variableInts[name] = (int)Convert.ChangeType(value,typeof(int));
             }
-            else if (varFloats != null && varFloats.ContainsKey(name))
+            else if (variableFloats != null && variableFloats.ContainsKey(name))
             {
-                varFloats[name] = (float)Convert.ChangeType(value, typeof(float));
+                variableFloats[name] = (float)Convert.ChangeType(value, typeof(float));
+            }
+            else if (variableStrings.ContainsKey(name))
+            {
+                var word = (string)Convert.ChangeType(value, typeof(string));
+                variableStrings[name] = word.Trim(new char[] {'"'});
             }
         }
 
@@ -493,7 +558,7 @@ namespace Utj
             long ofst;
             if (labelOfsts.TryGetValue(args[1], out ofst))
             {
-                textAssetReader.Seek(ofst, SeekOrigin.Begin);
+                m_textAssetReader.Seek(ofst, SeekOrigin.Begin);
             }
             else
             {
@@ -513,28 +578,11 @@ namespace Utj
         bool CommandPrint(string[] args)
         {
             var sb = new StringBuilder();
-            for(var i=1; i < args.Length; i++)
-            {
-                string word = args[i];
-                if (word.StartsWith("\""))
-                {
-                    word = word.Trim(new char[] { '"' });                    
-                    sb.AppendFormat("{0} ", word);
-                }
-                else if (varInts.ContainsKey(word))
-                {                    
-                    sb.AppendFormat("{0} ", varInts[word]);
-                }
-                else if (varFloats.ContainsKey(word))
-                {                    
-                    sb.AppendFormat("{0} ", varFloats[word]);
-                } else
-                {
-                    sb.AppendFormat("{0} ",word);
-                }
+            for(var i = 1; i < args.Length; i++)
+            {                
+                sb.AppendFormat("{0} ", GetString(args[i]));
             }
-            Debug.Log(sb.ToString());                
-            
+            Debug.Log(sb.ToString());                            
             return true;                        
         }
 
@@ -548,13 +596,17 @@ namespace Utj
         /// <returns></returns>
         bool CommandSet(string[] args)
         {
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {                
-                varInts[args[1]] = GetInt(args[2]);                
+                variableInts[args[1]] = GetInt(args[2]);                
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                varFloats[args[1]] = GetFloat(args[2]);                                
+                variableFloats[args[1]] = GetFloat(args[2]);                                
+            }
+            else if (variableStrings.ContainsKey(args[1]))
+            {
+                variableStrings[args[1]] = GetString(args[2]);
             }
             else
             {
@@ -573,14 +625,19 @@ namespace Utj
         /// <returns></returns>
         bool CommandAdd(string[] args)
         {
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                varInts[args[1]] = GetInt(args[2]) + GetInt(args[3]);
+                variableInts[args[1]] = GetInt(args[2]) + GetInt(args[3]);
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                varFloats[args[1]] = GetFloat(args[2]) + GetFloat(args[3]);
-            } else
+                variableFloats[args[1]] = GetFloat(args[2]) + GetFloat(args[3]);
+            }
+            else if (variableStrings.ContainsKey(args[1]))
+            {
+                variableStrings[args[1]] = GetString(args[2]) + GetString(args[3]);
+            }
+            else
             {
                 isError = true;
                 Debug.Log("Invalid args in add "+ args);
@@ -596,13 +653,13 @@ namespace Utj
         /// <returns></returns>
         bool CommandSub(string[] args)
         {
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                varInts[args[1]] = GetInt(args[2]) - GetInt(args[3]);
+                variableInts[args[1]] = GetInt(args[2]) - GetInt(args[3]);
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                varFloats[args[1]] -= GetFloat(args[2]) - GetFloat(args[3]);
+                variableFloats[args[1]] -= GetFloat(args[2]) - GetFloat(args[3]);
             }
             return true;
         }
@@ -615,14 +672,15 @@ namespace Utj
         /// <returns></returns>
         bool CommandMul(string[] args)
         {
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                varInts[args[1]] = GetInt(args[2]) * GetInt(args[3]);
+                variableInts[args[1]] = GetInt(args[2]) * GetInt(args[3]);
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                varFloats[args[1]] = GetFloat(args[2]) * GetInt(args[3]);
-            } else
+                variableFloats[args[1]] = GetFloat(args[2]) * GetInt(args[3]);
+            }
+            else
             {
                 isError = true;
                 Debug.Log("Invalid args in Mul " + args);
@@ -639,14 +697,15 @@ namespace Utj
         /// <returns></returns>
         bool CommandDiv(string[] args)
         {
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                varInts[args[1]] = GetInt(args[2]) / GetInt(args[3]);
+                variableInts[args[1]] = GetInt(args[2]) / GetInt(args[3]);
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                varFloats[args[1]] = GetFloat(args[2]) / GetFloat(args[3]);
-            }　else
+                variableFloats[args[1]] = GetFloat(args[2]) / GetFloat(args[3]);
+            }
+            else
             {
                 isError = true;
                 Debug.Log("Invalid args in div " + args);
@@ -664,16 +723,16 @@ namespace Utj
         bool CommandIFEQ(string[] args)
         {
             bool result = false;
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                if (varInts[args[1]] == GetInt(args[2]))
+                if (variableInts[args[1]] == GetInt(args[2]))
                 {
                     result = true;
                 }
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                if (varFloats[args[1]] == GetFloat(args[2]))
+                if (variableFloats[args[1]] == GetFloat(args[2]))
                 {
                     result = true;
                 }
@@ -697,16 +756,16 @@ namespace Utj
         bool CommandIFNOTEQ(string[] args)
         {
             bool result = false;
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                if (varInts[args[1]] != GetInt(args[2]))
+                if (variableInts[args[1]] != GetInt(args[2]))
                 {
                     result = true;
                 }
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                if (varFloats[args[1]] != GetFloat(args[2]))
+                if (variableFloats[args[1]] != GetFloat(args[2]))
                 {
                     result = true;
                 }
@@ -730,16 +789,16 @@ namespace Utj
         bool CommandIFLS(string[] args)
         {
             bool result = false;
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                if (varInts[args[1]] < GetInt(args[2]))
+                if (variableInts[args[1]] < GetInt(args[2]))
                 {
                     result = true;
                 }
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                if (varFloats[args[1]] < GetFloat(args[2]))
+                if (variableFloats[args[1]] < GetFloat(args[2]))
                 {
                     result = true;
                 }
@@ -763,16 +822,16 @@ namespace Utj
         bool CommandIFLE(string[] args)
         {
             bool result = false;
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                if (varInts[args[1]] <= GetInt(args[2]))
+                if (variableInts[args[1]] <= GetInt(args[2]))
                 {
                     result = true;
                 }
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                if (varFloats[args[1]] <= GetFloat(args[2]))
+                if (variableFloats[args[1]] <= GetFloat(args[2]))
                 {
                     result = true;
                 }
@@ -796,16 +855,16 @@ namespace Utj
         bool CommandIFGR(string[] args)
         {
             bool result = false;
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                if (varInts[args[1]] > GetInt(args[2]))
+                if (variableInts[args[1]] > GetInt(args[2]))
                 {
                     result = true;
                 }
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                if (varFloats[args[1]] > GetFloat(args[2]))
+                if (variableFloats[args[1]] > GetFloat(args[2]))
                 {
                     result = true;
                 }
@@ -829,16 +888,16 @@ namespace Utj
         bool CommandIFGE(string[] args)
         {
             bool result = false;
-            if (varInts.ContainsKey(args[1]))
+            if (variableInts.ContainsKey(args[1]))
             {
-                if (varInts[args[1]] >= GetInt(args[2]))
+                if (variableInts[args[1]] >= GetInt(args[2]))
                 {
                     result = true;
                 }
             }
-            else if (varFloats.ContainsKey(args[1]))
+            else if (variableFloats.ContainsKey(args[1]))
             {
-                if (varFloats[args[1]] >= GetFloat(args[2]))
+                if (variableFloats[args[1]] >= GetFloat(args[2]))
                 {
                     result = true;
                 }
@@ -865,8 +924,9 @@ namespace Utj
         /// <returns></returns>
         bool CommandTouch(string[] args)
         {
-            var type = args[1].Trim(new char[] { '"' });
+            var type = GetString(args[1]);
             var fingerId = GetInt(args[2]);
+            // begin
             if (string.Compare(type, "begin") == 0)
             {
                 if (args[3].StartsWith("\""))
@@ -935,6 +995,7 @@ namespace Utj
 
                 }
             }
+            // Move
             else if(string.Compare(type,"move") == 0)
             {
                 var position = new Vector2(GetFloat(args[3]), GetFloat(args[4]));
@@ -965,6 +1026,7 @@ namespace Utj
                         );
                 }
             }
+            // Ended
             else if (string.Compare(type,"ended") == 0)
             {
                 InputBot.instance.SetTouchEnded(fingerId);
@@ -981,9 +1043,9 @@ namespace Utj
         /// <param name="args[2]">"buttonName"</param>
         /// <returns></returns>
         bool CommandButton(string[] args)
-        {            
-            var type = args[1].Trim(new char[] { '"' });
-            var name = args[2].Trim(new char[] { '"' });
+        {
+            var type = GetString(args[1]);
+            var name = GetString(args[2]);
             bool isDown = string.Compare(type,"down") == 0;
             InputBot.instance.SetButtonDown(name, isDown);
             return true;
@@ -999,7 +1061,7 @@ namespace Utj
         /// <returns></returns>
         bool CommandAxisRaw(string[] args)
         {
-            string name = args[1].Trim(new char[] { '"' });
+            string name = GetString(args[1]);
             InputBot.instance.SetAxisRaw(name, GetFloat(args[2]));
             return true;
         }
@@ -1014,7 +1076,7 @@ namespace Utj
         /// <returns></returns>
         bool CommandMouseButton(string[] args)
         {
-            var type = args[1].Trim(new char[] { '"' });
+            var type = GetString(args[1]);
             if (string.Compare(type,"down") == 0)
             {
                 InputBot.instance.SetMouseButtonDown(GetInt(args[2]));
@@ -1051,7 +1113,7 @@ namespace Utj
         {
             CommandFunction function;
 
-            if(commandFunctons.TryGetValue(args[0], out function))
+            if(m_commandFunctons.TryGetValue(args[0], out function))
             {
                 return function(args);
             }
@@ -1074,7 +1136,7 @@ namespace Utj
                 return;
             }            
             
-            if ((m_isStop) ||(textAssetReader == null) || (textAssetReader.EndOfStream))
+            if ((m_isStop) ||(m_textAssetReader == null) || (m_textAssetReader.EndOfStream))
             {
                 isPlay = false;
                 InputBot.instance.isOverrideInput = m_overrideInputBackup;
@@ -1088,9 +1150,9 @@ namespace Utj
                 return;
             }
 
-            while (!textAssetReader.EndOfStream)
+            while (!m_textAssetReader.EndOfStream)
             {
-                var line = textAssetReader.ReadLine();
+                var line = m_textAssetReader.ReadLine();
                 if (string.IsNullOrEmpty(line))
                 {
                     continue;
@@ -1109,7 +1171,7 @@ namespace Utj
                 }
                 
                 // 変数はスキップ
-                if (line.StartsWith("int") || line.StartsWith("float"))
+                if (line.StartsWith("int") || line.StartsWith("float") || line.StartsWith("string"))
                 {
                     continue;
                 }
@@ -1222,15 +1284,33 @@ namespace Utj
         /// </summary>
         void PreProcessor()
         {
-            if (textAssetReader != null)
+            if (m_textAssetReader != null)
             {
-                textAssetReader.Seek(0, SeekOrigin.Begin);
+                m_textAssetReader.Seek(0, SeekOrigin.Begin);
                 labelOfsts.Clear();
-                varInts.Clear();
-                varFloats.Clear();
-                while (!textAssetReader.EndOfStream)
+                variableInts.Clear();
+                variableFloats.Clear();
+                variableStrings.Clear();
+
+                // 予約語
+                variableStrings.Add("begin","begin");
+                variableStrings.Add("move", "move");
+                variableStrings.Add("ended", "ended");
+                variableStrings.Add("down", "down");
+                variableStrings.Add("jump","Jump");
+                variableStrings.Add("fire1", "Fire1");
+                variableStrings.Add("fire2", "Fire2");
+                variableStrings.Add("fire3", "Fire3");
+                variableStrings.Add("horizontal", StandaloneInputModuleOverride.instance.horizontalAxis);
+                variableStrings.Add("vertical", StandaloneInputModuleOverride.instance.verticalAxis);
+                variableStrings.Add("submit", StandaloneInputModuleOverride.instance.submitButton);
+                variableStrings.Add("cancel", StandaloneInputModuleOverride.instance.cancelButton);
+                variableStrings.Add("frame", "frame");
+                variableStrings.Add("sec", "sec");
+
+                while (!m_textAssetReader.EndOfStream)
                 {
-                    var line = textAssetReader.ReadLine();
+                    var line = m_textAssetReader.ReadLine();
                     if (line == null)
                     {
                         break;
@@ -1239,7 +1319,7 @@ namespace Utj
                     {
                         //var args = line.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
                         var args = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                        labelOfsts.Add(args[1], textAssetReader.Position);
+                        labelOfsts.Add(args[1], m_textAssetReader.Position);
                     }
                     else if (line.StartsWith("int"))
                     {
@@ -1247,11 +1327,11 @@ namespace Utj
                         int v;
                         if (args.Length >= 3 && int.TryParse(args[2], out v))
                         {
-                            varInts.Add(args[1], v);
+                            variableInts.Add(args[1], v);
                         }
                         else
                         {
-                            varInts.Add(args[1], 0);
+                            variableInts.Add(args[1], 0);
                         }
                     }
                     else if (line.StartsWith("float"))
@@ -1260,16 +1340,25 @@ namespace Utj
                         float v;
                         if (args.Length >= 3 && float.TryParse(args[2], out v))
                         {
-                            varFloats.Add(args[1], v);
+                            variableFloats.Add(args[1], v);
                         }
                         else
                         {
-                            varFloats.Add(args[1], 0);
+                            variableFloats.Add(args[1], 0);
+                        }
+                    }
+                    else if (line.StartsWith("string"))
+                    {
+                        string[] args;
+                        LexicalAnalysis(line, out args);
+                        if(args.Length >= 3)
+                        {
+                            variableStrings.Add(args[1], args[2].Trim(new char[] { '"' }));
                         }
                     }
                 }
-                maxPosition = textAssetReader.Position;
-                textAssetReader.Seek(0, SeekOrigin.Begin);
+                maxPosition = m_textAssetReader.Position;
+                m_textAssetReader.Seek(0, SeekOrigin.Begin);
             }
         }
     }    
