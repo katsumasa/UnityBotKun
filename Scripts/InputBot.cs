@@ -73,10 +73,23 @@ namespace Utj
         }
 
 
-        
+        public override bool touchSupported
+        {
+            get {
+
+                if (isOverrideInput) {
+                    return true;
+                }
+                else
+                {
+                    return base.touchSupported;
+                }
+            }            
+        }
+
         /// <summary>
         /// タップした数を返す
-        /// </summary>
+        /// </summary>        
         public override int touchCount
         {
             get
@@ -97,10 +110,11 @@ namespace Utj
         }
 
 
+
         public class TouchEvent
+
         {
             public Touch touch;
-
 
             public TouchEvent()
             {
@@ -117,8 +131,8 @@ namespace Utj
         List<TouchEvent> m_touchEvents;
         Dictionary<string, float> m_axisEvents;
         Dictionary<string, bool> m_buttonDownEvents;        
-        Touch m_mouseTouch;
-        ButtonState[] m_mouseButtonEvents;
+        Touch m_mouseTouch;        
+        ButtonState[] m_mouseButtonEvents;        
         Vector2 m_mousePosition;
         Vector2 m_mousePrevPosition;
         Vector2 m_mouseScrollDelta;
@@ -172,7 +186,7 @@ namespace Utj
             }            
         }
 
-
+        
         /// <summary>
         /// Interface to Input.GetButtonDown. Can be overridden to provide custom input instead of using the Input class.
         /// </summary>
@@ -295,11 +309,17 @@ namespace Utj
         public override bool mousePresent {
             get
             {
+                // StandaloneInputModule.Process()の処理を見ていると、
+                // ProcessTouchEventが実行された時は、
+                // ProcessMouseEventが実行されない為、
+                // 特段無効にする必要はなさそう。
+#if false
                 // Touchシュミレーションが有効な場合は、Mouseは無効とする
                 if (isEnableTouchSimulation)
                 {
                     return false;
                 }
+#endif
                 return base.mousePresent;
             }
         }
@@ -348,7 +368,7 @@ namespace Utj
         /// <param name="target">GameObject名</param>
         public void SetTouchBegin(int fingerId, string target)
         {
-            SetTouchBegin(fingerId, GameObject.Find(name));
+            SetTouchBegin(fingerId, GameObject.Find(target));
         }
 
 
@@ -374,6 +394,7 @@ namespace Utj
             int tapCount = 1)
         {
             var touchEvent = new TouchEvent();
+
             touchEvent.touch.phase = TouchPhase.Began;
             touchEvent.touch.position = position;
             touchEvent.touch.rawPosition = position;
@@ -512,9 +533,10 @@ namespace Utj
              
         }
 
-        private void FixedUpdate()
-        {
-            var deltaTime = Time.fixedDeltaTime;
+        //private void FixedUpdate()
+        private void Update()
+        {            
+            var deltaTime = Time.unscaledDeltaTime;
             if (isEnableTouchSimulation)
             {
                 UpdateMouseTouch(deltaTime);
@@ -542,9 +564,10 @@ namespace Utj
                     {
                         case TouchPhase.Began:
                             {
-                                m_touchEvents[i].touch.phase = TouchPhase.Stationary;                                
+                                m_touchEvents[i].touch.phase = TouchPhase.Stationary;
                             }
                             break;
+                            
 
                         case TouchPhase.Moved:
                             {
@@ -556,7 +579,8 @@ namespace Utj
 
                         case TouchPhase.Ended:
                             {
-                                m_touchEvents.Remove(m_touchEvents[i]);
+                                
+                                    m_touchEvents.Remove(m_touchEvents[i]);
                             }
                             break;
                     }
