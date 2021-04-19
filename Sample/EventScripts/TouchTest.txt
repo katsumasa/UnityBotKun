@@ -1,0 +1,17 @@
+::: Button1から4迄を順にオブジェクト名でタッチする
+
+string buttonName
+int i 1
+
+# Loop
+add buttonName "Button" i
+touch begin 0 buttonName
+wait sec 1
+
+touch ended 0
+wait frame 1
+
+add i i 1
+ifls i 5 goto Loop
+
+
