@@ -398,12 +398,17 @@ namespace Utj
 
 
         // Update is called once per frame
-        //void Update()
+#if true
+        void Update()
+        {
+            Interpreter(Time.unscaledDeltaTime);
+        }
+#else
         void FixedUpdate()
         {                        
-            Interpreter();
+            Interpreter(Time.fixedDeltaTime);
         }
-
+#endif
 
         /// <summary>
         /// 変数として存在するか否か
@@ -468,6 +473,19 @@ namespace Utj
         }
         
 
+        bool IsString(string arg)
+        {
+            if (variableStrings.ContainsKey(arg))
+            {
+                return true;
+            }
+            else if (arg.StartsWith("\""))
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// 文字列を取得する
         /// </summary>
@@ -480,7 +498,10 @@ namespace Utj
                 return variableStrings[arg];
             }
             else if(variableInts.ContainsKey(arg)){
-                return variableInts[arg].ToString();
+
+                var i = variableInts[arg];
+                var s = i.ToString();
+                return s ;
             }
             else if (variableFloats.ContainsKey(arg))
             {
@@ -636,7 +657,11 @@ namespace Utj
             }
             else if (variableStrings.ContainsKey(args[1]))
             {
-                variableStrings[args[1]] = GetString(args[2]) + GetString(args[3]);
+
+                var s2 = GetString(args[2]);
+                var s3 = GetString(args[3]);
+
+                variableStrings[args[1]] = s2 + s3;
             }
             else
             {
@@ -930,9 +955,11 @@ namespace Utj
             // begin
             if (string.Compare(type, "begin") == 0)
             {
-                if (args[3].StartsWith("\""))
+                
+
+                if (IsString(args[3]))
                 {
-                    var name = args[3].Trim(new char[] { '"' });
+                    var name = GetString(args[3]);
                     InputBot.instance.SetTouchBegin(fingerId, name);
                 }
                 else
@@ -1130,7 +1157,7 @@ namespace Utj
         /// <summary>
         /// スクリプトの実行
         /// </summary>
-        void Interpreter()
+        void Interpreter(float deltaTime)
         {            
             if (!isPlay || isError)
             {
@@ -1145,7 +1172,7 @@ namespace Utj
             }
 
             m_waitFrame--;
-            m_waitTime -= Time.fixedDeltaTime;
+            m_waitTime -= deltaTime;
             if (m_waitFrame > 0 || (m_waitTime > 0f))
             {
                 return;
@@ -1309,6 +1336,8 @@ namespace Utj
                 variableStrings.Add("frame", "frame");
                 variableStrings.Add("sec", "sec");
 
+                variableInts.Add("fingerId", StandaloneInputModuleOverride.kFakeTouchesId);
+
                 while (!m_textAssetReader.EndOfStream)
                 {
                     var line = m_textAssetReader.ReadLine();
@@ -1355,6 +1384,10 @@ namespace Utj
                         if(args.Length >= 3)
                         {
                             variableStrings.Add(args[1], args[2].Trim(new char[] { '"' }));
+                        }
+                        else
+                        {
+                            variableStrings.Add(args[1], "");
                         }
                     }
                 }
