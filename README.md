@@ -7,12 +7,14 @@
 
 ## 本ライブラリで出来ること
 
-- 独自の簡易スクリプトを通して、Unityで開発しているアプリケーションのTouchやキー入力といった[UnityEngine.Input](https://docs.unity3d.com/ja/current/ScriptReference/Input.html)を操作することが出来ます。　[^1]
-- 簡易スクリプトをゼロから作成するだけではなく、実際の操作を記録し、簡易スクリプトを出力することで単純なリプレイを再現することが出来ます。[^2]
+- 独自のイベントスクリプトを通して、Unityで開発しているアプリケーションのTouchやキー入力といった[UnityEngine.Input](https://docs.unity3d.com/ja/current/ScriptReference/Input.html)を外部から操作する。　[^1]
+- プレイ内容をイベントスクリプトへ出力することで、簡易的なリプレイ機能を再現する。[^2]
 
 ## 開発環境
 
-Unity2019.4.22f1
+### Unityのバージョン
+
+- Unity2019.4.22f1
 
 ## 使用方法
 
@@ -113,7 +115,6 @@ Sceneを跨いでEventSystemBotを使用する為のコンポーネントです�
 
 - Q</br>イベントスクリプトを実行しても、Inputが反映されません。
 - A</br>他のEventSystemが有効になっている可能性があります。実行時にEventSystemBot以外のEventSystemがScene上に存在しないか確認してみて下さい。また、Standalone Iput Module OverrideのForce Module Activeを有効にすることで改善する可能性があります。
-
 
 [^1]:リリース済みのアプリケーションを制御出来る訳ではありません。）
 [^2]:Input単体での再現の為、再現性の精度は低いです。
