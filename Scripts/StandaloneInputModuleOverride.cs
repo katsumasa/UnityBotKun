@@ -43,7 +43,7 @@ namespace Utj
         protected override void Start()
         {
             base.Start();
-            m_InputOverride = InputBot.instance;
+            inputOverride = InputBot.instance;
         }
 
 
