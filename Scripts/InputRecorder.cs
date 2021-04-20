@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 #if UNITY_EDITOR
@@ -117,7 +118,9 @@ namespace Utj
         /// <summary>
         /// スクリプト書き込み用
         /// </summary>
-        StringWriter m_stringWriter;
+        StringBuilder m_scripttAll;
+        StringBuilder m_scriptBuffer;
+
 
         /// <summary>
         /// 軸の値が前回のフレームと異なる場合に出力する為の保存用
@@ -160,10 +163,11 @@ namespace Utj
             else
             {
                 // 初期化処理
-                m_stringWriter = new StringWriter();                
+                m_scriptBuffer = new StringBuilder();
+                m_scripttAll = new StringBuilder();
                 isRecording = true;
-                m_waitCount = 1;
-                m_waitTime = Time.fixedDeltaTime;
+                m_waitCount = 0;
+                m_waitTime = 0f;
                 m_isAddWait = false;
                 m_mousePosition = Vector2.zero;
                 m_axisValues = new float[m_axisNames.Length];
@@ -182,9 +186,19 @@ namespace Utj
         {
             if (isRecording)
             {
-                textAsset = new TextAsset(m_stringWriter.ToString());
+                if (m_waitType == Wait.Sec)
+                {
+                    m_scripttAll.AppendFormat("wait sec {0}\n", m_waitTime);
+                }
+                else
+                {
+                    m_scripttAll.AppendFormat("wait frame {0}\n", m_waitCount);
+                }
+
+                textAsset = new TextAsset(m_scripttAll.ToString());
                 isRecording = false;
-                m_stringWriter.Close();            
+                m_scripttAll = null;
+                m_scriptBuffer = null;
             }
         }
 
@@ -197,11 +211,11 @@ namespace Utj
 
 
         
-        void FixedUpdate()
+        void Update()
         {
             if (isRecording)
             {
-                InputEventRecorder();
+                InputEventRecorder(Time.unscaledDeltaTime);
             }
         }
 
@@ -209,28 +223,10 @@ namespace Utj
         /// <summary>
         /// Inputイベントを記録する
         /// </summary>
-        void InputEventRecorder()
+        void InputEventRecorder(float deltaTime)
         {
-            if (m_isAddWait)
-            {
-                if (m_waitType == Wait.Sec)
-                {
-                    m_stringWriter.WriteLine("wait sec {0}", m_waitTime);
-                }
-                else
-                {
-                    m_stringWriter.WriteLine("wait frame {0}", m_waitCount);
-                }
-                m_isAddWait = false;
-                m_waitCount = 1;
-                m_waitTime = Time.fixedDeltaTime;
-            }
-            else
-            {
-                m_waitCount++;
-                m_waitTime += Time.fixedDeltaTime;
-            }
-
+            m_waitCount++;
+            m_waitTime += deltaTime;
 
 
             if (m_isRecordAxisRaw)
@@ -250,10 +246,24 @@ namespace Utj
                 m_isAddWait |= MouseEventRecorder();
             }
 
+            if (m_isAddWait)
+            {
+                if (m_waitType == Wait.Sec)
+                {
+                    m_scripttAll.AppendFormat("wait sec {0}\n", m_waitTime);
+                }
+                else
+                {
+                    m_scripttAll.AppendFormat("wait frame {0}\n", m_waitCount);                    
+                }
+                m_scripttAll.Append(m_scriptBuffer);
+                m_scriptBuffer.Clear();
 
-            
-
-            script = m_stringWriter.ToString();
+                m_isAddWait = false;
+                m_waitCount = 0;
+                m_waitTime = 0f;
+            }
+            script = m_scripttAll.ToString();
         }
 
 
@@ -268,12 +278,12 @@ namespace Utj
                 // BaseInputにはGetButtonUpが存在しない為、Inputを使用する
                 if (Input.GetButtonDown(buttonName))
                 {
-                    m_stringWriter.WriteLine("button {0} down", buttonName);
+                    m_scriptBuffer.AppendFormat("button {0} down\n", buttonName);
                     ret = true;
                 }
                 else if (Input.GetButtonUp(buttonName))
                 {
-                    m_stringWriter.WriteLine("button {0} up", buttonName);
+                    m_scriptBuffer.AppendFormat("button {0} up\n", buttonName);
                     ret = true;
                 }                
             }
@@ -294,7 +304,7 @@ namespace Utj
                 if (axis != m_axisValues[i] || m_isCompress == false)
                 {
                     m_axisValues[i] = axis;
-                    m_stringWriter.WriteLine("axisraw {0} {1}", name, axis);
+                    m_scriptBuffer.AppendFormat("axisraw {0} {1}\n", name, axis);
                     result = true;
                 }
             }
@@ -326,7 +336,7 @@ namespace Utj
                                 EventSystem.current.RaycastAll(pointer, raycastResults);
                                 if (raycastResults.Count > 0)
                                 {
-                                    m_stringWriter.WriteLine("touch begin {0} {1}",
+                                    m_scriptBuffer.AppendFormat("touch begin {0} {1}\n",
                                         touch.fingerId,
                                         raycastResults[0].gameObject.name
                                         );
@@ -334,10 +344,10 @@ namespace Utj
                                     result = true;
                                     break;
                                 }
-                            }                            
-                            
-                            m_stringWriter.WriteLine(
-                                "touch begin {0} {1} {2} {3} {4} {5} {6} {7}",
+                            }
+
+                            m_scriptBuffer.AppendFormat(
+                                "touch begin {0} {1} {2} {3} {4} {5} {6} {7}\n",
                                 touch.fingerId,
                                 touch.position.x,
                                 touch.position.y,
@@ -354,7 +364,7 @@ namespace Utj
 
                     case TouchPhase.Moved:
                         {
-                            m_stringWriter.WriteLine("touch move {0} {1} {2} {3} {4} {5}",
+                            m_scriptBuffer.AppendFormat("touch move {0} {1} {2} {3} {4} {5}\n",
                                 touch.fingerId,
                                 touch.position.x,
                                 touch.position.y,
@@ -368,7 +378,7 @@ namespace Utj
 
                     case TouchPhase.Ended:
                         {
-                            m_stringWriter.WriteLine("touch ended {0}", touch.fingerId);
+                            m_scriptBuffer.AppendFormat("touch ended {0}\n", touch.fingerId);
                             result = true;
                         }
                         break;
@@ -394,12 +404,12 @@ namespace Utj
                 {
                     if (InputBot.instance.GetMouseButtonDown(i))
                     {
-                        m_stringWriter.WriteLine("mousebutton {0} down", i);
+                        m_scriptBuffer.AppendFormat("mousebutton {0} down\n", i);
                         result = true;
                     }
                     else if (InputBot.instance.GetMouseButtonUp(i))
                     {
-                        m_stringWriter.WriteLine("mousebutton {0} up", i);
+                        m_scriptBuffer.AppendFormat("mousebutton {0} up\n", i);
                         result = true;
                     }
                 }
@@ -408,7 +418,7 @@ namespace Utj
                 // Mouseの位置
                 if (InputBot.instance.mousePosition != m_mousePosition || m_isCompress == false)
                 {
-                    m_stringWriter.WriteLine("mousepos {0} {1}", InputBot.instance.mousePosition.x, InputBot.instance.mousePosition.y);
+                    m_scriptBuffer.AppendFormat("mousepos {0} {1}\n", InputBot.instance.mousePosition.x, InputBot.instance.mousePosition.y);
                     m_mousePosition = InputBot.instance.mousePosition;
                     result = true;
                 }
