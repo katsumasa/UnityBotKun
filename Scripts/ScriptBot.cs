@@ -1362,9 +1362,12 @@ namespace Utj
                 variableStrings.Add("begin","begin");
                 variableStrings.Add("move", "move");
                 variableStrings.Add("ended", "ended");
-                variableStrings.Add("down", "down");
 
-                // button
+                // ボタン(マウスボタン)動作
+                variableStrings.Add("down", "down");
+                variableStrings.Add("up", "up");
+
+                // button種別
                 variableStrings.Add("jump","Jump");
                 variableStrings.Add("fire1", "Fire1");
                 variableStrings.Add("fire2", "Fire2");
