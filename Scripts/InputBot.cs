@@ -237,7 +237,7 @@ namespace Utj
             {
                 return base.GetMouseButton(button);
             }
-            if(m_mouseButtonEvents[button] != ButtonState.Begin)
+            if(m_mouseButtonEvents[button] != ButtonState.None)
             {
                 return true;
             }
