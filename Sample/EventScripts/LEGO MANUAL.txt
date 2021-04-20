@@ -61,6 +61,7 @@ axisraw horizontal -1.0
 axisraw vertical  1.0
 wait sec 2.0
 
+:: 崖に落ちる
 axisraw horizontal 0
 axisraw vertical  1.0
 wait sec 0.5
@@ -68,7 +69,6 @@ wait sec 0.5
 axisraw horizontal -1,0
 axisraw vertical  0
 wait sec 2.0
-
 
 
 axisraw horizontal 0
@@ -82,7 +82,4 @@ touch ended fingerId
 wait sec 1.0
 
 
-
 goto START
-
-

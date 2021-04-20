@@ -1,17 +1,67 @@
-::: Button1����4�������ɃI�u�W�F�N�g���Ń^�b�`����
+﻿::: Button1から4迄を順にオブジェクト名でタッチする
 
 string buttonName
 int i 1
 
-# Loop
-add buttonName "Button" i
-touch begin 0 buttonName
-wait sec 1
 
-touch ended 0
+goto MOUSE_TEST2
+
+print "Buttonを1frame間隔で順にTouchするテスト"
+
+set i 1
+# Loop1
+add buttonName "Button" i
+touch begin fingerId buttonName
+wait frame 1
+
+touch ended fingerId
 wait frame 1
 
 add i i 1
-ifls i 5 goto Loop
+ifls i 5 goto Loop1
 
+
+print "Buttonを1sec間隔で順にTouchするテスト"
+set i 1
+# Loop2
+add buttonName "Button" i
+touch begin fingerId buttonName
+wait sec 1
+
+touch ended fingerId
+wait sec 1
+
+add i i 1
+ifls i 5 goto Loop2
+
+
+print "座標指定でタッチするテスト"
+
+touch begin fingerId 400 850
+wait sec 1
+touch ended fingerId
+wait sec 1
+
+
+# MOUSE_TEST
+
+print "マウスでボタンをクリックするテスト"
+
+mousepos 400 850
+mousebutton 0 down
+wait sec 1
+mousebutton 0 up
+wait sec 1
+
+# MOUSE_TEST2
+
+print "マウスオーバーテスト"
+mousepos 800 370
+wait sec 5
+
+print "マウスクリックテスト"
+mousebutton 0 down
+wait sec 1
+mousebutton 0 up
+wait sec 1
 
