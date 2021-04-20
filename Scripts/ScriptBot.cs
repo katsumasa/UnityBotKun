@@ -1450,7 +1450,7 @@ namespace Utj
         /// <param name="netx"></param>
         void SceneChangedCB(Scene current,Scene netx)
         {
-            Debug.Log("SceneChangedCB");
+            //Debug.Log("SceneChangedCB");
             m_waitSceneChanged--;
         }
     }    
