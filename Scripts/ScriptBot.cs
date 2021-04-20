@@ -4,7 +4,7 @@ using System.IO;
 using System;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 
 namespace Utj
@@ -126,6 +126,11 @@ namespace Utj
         /// </summary>
         float m_waitTime;
 
+
+        /// <summary>
+        /// スクリプトを待機するSceneChangedの回数
+        /// </summary>
+        int m_waitSceneChanged;
 
         /// <summary>
         /// InputBot.instance.isOverrideInputの値の退避先
@@ -312,6 +317,8 @@ namespace Utj
             m_textAssetReader = new TextAssetReader(scripts[index]);
             m_textAssetReader.Position = 0;
             m_waitFrame = 0;
+            m_waitTime = 0f;
+            m_waitSceneChanged = 0;
             isPlay = true;
             m_isStop= false;
             isError = false;
@@ -404,6 +411,18 @@ namespace Utj
             {
                 instance = null;                
             }
+        }
+
+
+        private void OnEnable()
+        {
+            SceneManager.activeSceneChanged += SceneChangedCB;
+        }
+
+
+        private void OnDisable()
+        {
+            SceneManager.activeSceneChanged -= SceneChangedCB;
         }
 
 
@@ -553,7 +572,7 @@ namespace Utj
         /// Waitの処理
         /// </summary>
         /// <param name="args[0]">wait</param>
-        /// <param name="args[1]">"frame" or "sec"</param>
+        /// <param name="args[1]">"frame" or "sec" or "sceneChanged"</param>
         /// <param name="args[1]">フレーム数 or 待機時間</param>
         /// <returns></returns>
         bool CommandWait(string[] args)
@@ -564,17 +583,23 @@ namespace Utj
             }
             else
             {
+                m_waitFrame = 0;
+                m_waitTime = 0f;
+                m_waitSceneChanged = 0;
+                
                 var type = GetString(args[1]);
                 if (string.Compare(type, "frame") == 0)
                 {
-                    m_waitFrame = GetInt(args[2]);
-                    m_waitTime = 0f;
+                    m_waitFrame = GetInt(args[2]);                    
                 }
                 else if (string.Compare(type, "sec") == 0)
                 {
                     m_waitTime = GetFloat(args[2]);
-                    m_waitFrame = 0;
                 }                
+                else if (string.Compare(type, "sceneChanged")==0)
+                {
+                    m_waitSceneChanged = GetInt(args[2]);
+                }
             }            
             return false;
         }
@@ -1183,7 +1208,7 @@ namespace Utj
 
             m_waitFrame--;
             m_waitTime -= deltaTime;
-            if (m_waitFrame > 0 || (m_waitTime > 0f))
+            if (m_waitFrame > 0 || (m_waitTime > 0f) || m_waitSceneChanged > 0)
             {
                 return;
             }
@@ -1331,22 +1356,33 @@ namespace Utj
                 variableStrings.Clear();
 
                 // 予約語
+
+                // touch
+                variableInts.Add("fingerId", StandaloneInputModuleOverride.kFakeTouchesId);
                 variableStrings.Add("begin","begin");
                 variableStrings.Add("move", "move");
                 variableStrings.Add("ended", "ended");
                 variableStrings.Add("down", "down");
+
+                // button
                 variableStrings.Add("jump","Jump");
                 variableStrings.Add("fire1", "Fire1");
                 variableStrings.Add("fire2", "Fire2");
                 variableStrings.Add("fire3", "Fire3");
-                variableStrings.Add("horizontal", StandaloneInputModuleOverride.instance.horizontalAxis);
-                variableStrings.Add("vertical", StandaloneInputModuleOverride.instance.verticalAxis);
                 variableStrings.Add("submit", StandaloneInputModuleOverride.instance.submitButton);
                 variableStrings.Add("cancel", StandaloneInputModuleOverride.instance.cancelButton);
+
+                // axis
+                variableStrings.Add("horizontal", StandaloneInputModuleOverride.instance.horizontalAxis);
+                variableStrings.Add("vertical", StandaloneInputModuleOverride.instance.verticalAxis);
+                
+                // wait
                 variableStrings.Add("frame", "frame");
                 variableStrings.Add("sec", "sec");
+                variableStrings.Add("sceneChanged","sceneChanged");
 
-                variableInts.Add("fingerId", StandaloneInputModuleOverride.kFakeTouchesId);
+
+
 
                 while (!m_textAssetReader.EndOfStream)
                 {
@@ -1404,6 +1440,18 @@ namespace Utj
                 maxPosition = m_textAssetReader.Position;
                 m_textAssetReader.Seek(0, SeekOrigin.Begin);
             }
+        }
+
+
+        /// <summary>
+        /// SceneChangedが発生した時のCB
+        /// </summary>
+        /// <param name="current"></param>
+        /// <param name="netx"></param>
+        void SceneChangedCB(Scene current,Scene netx)
+        {
+            Debug.Log("SceneChangedCB");
+            m_waitSceneChanged--;
         }
     }    
 }
