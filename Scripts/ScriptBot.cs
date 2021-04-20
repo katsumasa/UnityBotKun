@@ -12,7 +12,17 @@ namespace Utj
     /// <summary>
     /// イベントスクリプト実行システム
     /// Programed by Katsumasa Kimura
+    /// 
+    /// Scriptの実行順について
+    /// 
+    /// ScriptBotで設定した入力を１フレーム遅らせて更新させる為に、InputBot -> ScriptBot->MonoBehaviourの順に動作するように優先度を設定する必要がある
+    /// 
+    /// -900 InputBot　 前のフレームでScriptBotが設定したInputを更新
+    /// -500 ScriptBot　Inputを設定
+    ///    0 Default    Inputを参照
+    ///
     /// </summary>
+    [DefaultExecutionOrder(-500)]
     public class ScriptBot : MonoBehaviour
     {
         //readonly string scriptRoot = Path.Combine(Application.streamingAssetsPath, "UnityAutoTesterKun");

@@ -5,11 +5,21 @@ using UnityEngine.EventSystems;
 
 
 namespace Utj
-{    
+{
     /// <summary>
     /// BaseInputを偽装するClass
     /// Programed by Katsumasa Kimura
+    /// 
+    /// Scriptの実行順について
+    /// 
+    /// ScriptBotで設定した入力を１フレーム遅らせて更新させる為に、InputBot -> ScriptBot->MonoBehaviourの順に動作するように優先度を設定する必要がある
+    /// 
+    /// -900 InputBot　 前のフレームでScriptBotが設定したInputを更新
+    /// -500 ScriptBot　Inputを設定
+    ///    0 Default    Inputを参照
+    ///
     /// </summary>
+    [DefaultExecutionOrder(-900)]
     public class InputBot : BaseInput
     {
         //
