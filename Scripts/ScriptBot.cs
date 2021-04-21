@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-namespace Utj
+namespace Utj.UnityBotKun
 {
     /// <summary>
     /// イベントスクリプト実行システム

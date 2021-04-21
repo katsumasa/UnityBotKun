@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Utj
+namespace Utj.UnityBotKun
 {
 
     public class StandaloneInputModuleOverride : StandaloneInputModule

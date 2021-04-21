@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
-namespace Utj
+namespace Utj.UnityBotKun
 {
     [CustomEditor(typeof(InputRecorder))]
     public class InputRecorderEditor : Editor

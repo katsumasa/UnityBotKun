@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 
 
-namespace Utj
+namespace Utj.UnityBotKun
 {
     /// <summary>
     /// TextAssetをStreamReaderライクに扱うクラス

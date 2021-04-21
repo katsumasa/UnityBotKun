@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Utj
+namespace Utj.UnityBotKun
 {
     /// <summary>
     /// ScriptBotのInspector表示をカスタマイズするClass

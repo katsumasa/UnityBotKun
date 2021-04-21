@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Utj
+namespace Utj.UnityBotKun
 {
     /// <summary>
     /// DontDestroyOnLoadを実行するだけのClass

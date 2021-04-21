@@ -4,7 +4,7 @@ using System.Text;
 using UnityEngine;
 using UnityEditor;
 
-namespace Utj
+namespace Utj.UnityBotKun
 {
     /// <summary>
     /// InputBotのInspectorの表示Class

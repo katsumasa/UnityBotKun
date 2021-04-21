@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-namespace Utj
+namespace Utj.UnityBotKun
 {
     /// <summary>
     /// BaseInputを偽装するClass

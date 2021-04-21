@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEditor;
 #endif
 
-namespace Utj
+namespace Utj.UnityBotKun
 {
     /// <summary>
     /// Inputをスクリプトとして記録するClass
