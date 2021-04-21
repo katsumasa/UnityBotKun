@@ -30,9 +30,9 @@ Unityで開発しているアプリケーションのテストを全自動で行
 2. Scene上に、`EventSystemBot` を配置します。元々Scene上にある`EventSystem`は無効化して下さい。</br></br>
 ![7bb999acffa06c965befe08d2e0dfb32](https://user-images.githubusercontent.com/29646672/114997568-f414e000-9eda-11eb-9019-e399679cc537.gif)</br></br>
 3. [イベントスクリプト]を作成します。イベントスクリプトの記述情報に関しては、[こちら](https://github.com/katsumasa/UnityBotKun/wiki/EventScript)をご確認下さい。また、プレイ中の入力を記録し、イベントスクリプトに書き出すことも可能です。</br></br>
-4. イベントスクリプトをEventSystemBot->ScriptBot->Scriptsに登録します。</br></br>
+4. イベントスクリプトをEventSystemBot->EventScriptSystem->Scriptsに登録します。</br></br>
 ![4cc62410ddd69f7453220c85b54bae02](https://user-images.githubusercontent.com/29646672/115168940-9f9a7c00-a0f7-11eb-9f37-8630c06d885c.gif)</br></br>
-5. Unity EditorをPlay Modeで実行し、任意のタイミングでScriptBiotのPlayボタンを押します。</br></br>
+1. Unity EditorをPlay Modeで実行し、任意のタイミングでEventScriptSystemのPlayボタンを押します。</br></br>
 ![223d79121d8f60d04063952a468103fb](https://user-images.githubusercontent.com/29646672/115173162-9f9f7980-a101-11eb-9bc1-88bb9615ca79.gif)</br></br>
 6. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所は`Input2`に置き換えて下さい。</br> example</br>
 
