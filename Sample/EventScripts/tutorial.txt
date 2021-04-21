@@ -1,0 +1,147 @@
+﻿::: Script Bot Scriptチュートリアル
+
+
+::: int型,float型,string型の変数が使用出来ます。
+int i1 2
+float f1 1.0
+string str1 "Hello"
+
+::: printコマンドで変数・数値・文字列をコンソールに出力することが出来ます。
+print "i1:" i1
+print "f1:" f1
+print str1 "World"
+
+::: 変数は他の変数に代入出来ます
+int i2 0
+print "i2:" i2
+set i2 i1
+print "i2:" i2
+
+string str2 "World"
+set str1 str2
+print str1
+set str1 "Hello"
+print str1
+
+
+
+::: 変数と数値を使用して四則演算が出来ます
+
+::: 加算
+int i3
+print "i3=i2(" i2 ")+3"  
+add i3 i2 3
+print "i3:" i3
+
+add str1 str1 str2
+print str1
+
+::: string型は加算のみ対応しています
+
+::: 減算
+sub i3 i2 1
+print "i3=i2-1=" i3
+
+::: 乗算
+mul i3 i2 i2
+print "i3=i2*i2=" i3
+
+::: 乗算
+div i3 i3 i2
+print "i3=i3/2=" i3
+
+
+::: #でラベルを設定出来ます
+# Label1
+
+::: gotoコマンドで指定ラベルへジャンプします。
+goto Label2
+
+print "ここは実行されない"
+
+# Label2
+print "ここは実行される"
+
+::: 条件分岐が使用出来ます。条件を満たす場合、その次のコマンドが続けて実行されます。
+::: ラベルとgoto命令を組み合わせることでループが実現出来ます。
+
+set i1 0
+print "10回ループします。"
+# Loop
+print "i1:" i1
+add i1 i1 1
+ifls i1 10 goto Loop
+
+::: 全部で５種類の条件分岐が使用出来ます。
+::: ifeq(if A == B then ...)
+set i1 10
+ifeq i1 10 print i1 "と10は等しい"
+
+::: ifls(if A < B then ...)
+ifls i1 11 print i1 "は11未満"
+
+::: ifle(if A <= B then ...)
+ifle i1 10 print i1 "は10以下"
+
+::: ifgr(if A > B then...)
+set i1 100
+ifgr i1 10 print i1 "は10より大"
+
+
+::: ifge(if A >= B then ...)
+ifge i1 90 print i1 "は90以上"
+
+
+::: waitでスクリプトを指定時間停止することが出来ます。
+
+::: wait "frame" フレーム数で指定フレーム停止します。
+print "100frame停止します"
+::wait "frame" 100
+print "復帰します"
+
+::: wait "sec" 時間[秒]で指定時間停止します。
+print "3秒停止します"
+::wait "sec" 3.0
+print "復帰します"
+
+::: Inputに関するコマンドを実行することが出来ます
+
+::: Buttonには押す(down)と放す(up)があります
+::: Jumpボタンを1秒間押してから放します
+button "down" "Jump"
+wait "frame" 3
+button "up" "Jump"
+
+
+::: Axisには軸("Horizontal"と"Vertical")と値を指定します。
+::: Vertical方向に2.0秒間0.5傾けます。
+axisraw "Vertical" 0.5
+wait "sec" 1.0
+axisraw "Vertical" 0.0
+wait "frame" 10
+
+
+::: Touchは押す(begin) スワイプ(move) 放す(ended)の３種類があります。
+::: 座標(10.0,10.0)を1.0秒間タッチする
+touch "begin" 0 10.0 10.0
+wait "sec" 1.0
+touch "ended" 0
+wait "frame" 1
+
+::: 座標(10.0,10.0)を0.5秒間タッチした後、 座標(200.0,10.0)へスワイプしてから放す
+touch "begin" 0 10.0 10.0
+wait "sec" 0.5
+
+touch "move" 0 200.0 10.0
+wait "sec" 0.5
+touch "ended" 0
+wait "sec" 0.5
+
+::: string型を指定することも可能
+
+button down jump
+wait frame 3
+
+button up jump
+wait frame 3
+

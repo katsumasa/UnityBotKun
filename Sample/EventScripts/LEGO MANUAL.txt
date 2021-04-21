@@ -1,0 +1,85 @@
+﻿::: LEGO Explore the Islandの初めのステージを進め為のスクリプト
+
+::: START
+
+int loop 0
+
+
+# START
+
+# 開始地点
+print "Start"
+
+axisraw horizontal 0.5
+axisraw vertical   0.5
+wait sec 2.0
+
+axisraw horizontal 0
+axisraw vertical   0.5
+wait sec 1.0
+
+print "橋を飛び越える"
+axisraw horizontal 0.5 
+axisraw vertical   0.2
+button jump down
+wait sec 0.5
+
+print "前進"
+button jump up
+axisraw horizontal 1.0
+axisraw vertical   1.0
+wait sec 1.5
+
+
+axisraw horizontal 0
+axisraw vertical  1.0
+wait sec 0.5
+
+axisraw vertical  0
+
+axisraw horizontal 1.0
+axisraw vertical  1.0
+wait sec 0.75
+
+axisraw horizontal 0
+axisraw vertical  0
+
+axisraw horizontal 1.0
+axisraw vertical  1.0
+button jump down
+wait sec 0.5
+
+axisraw horizontal 0
+axisraw vertical  0
+button jump up
+
+axisraw horizontal 1.0
+axisraw vertical  1.0
+wait sec 2.0
+
+axisraw horizontal -1.0
+axisraw vertical  1.0
+wait sec 2.0
+
+:: 崖に落ちる
+axisraw horizontal 0
+axisraw vertical  1.0
+wait sec 0.5
+
+axisraw horizontal -1,0
+axisraw vertical  0
+wait sec 2.0
+
+
+axisraw horizontal 0
+axisraw vertical  0
+
+wait sceneChanged 1
+
+touch begin fingerId "Play Button""
+wait sceneChanged 1
+touch ended fingerId
+wait sec 1.0
+
+
+goto START
