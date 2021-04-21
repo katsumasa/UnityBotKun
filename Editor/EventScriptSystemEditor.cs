@@ -8,8 +8,8 @@ namespace Utj.UnityBotKun
     /// <summary>
     /// ScriptBotのInspector表示をカスタマイズするClass
     /// </summary>
-    [CustomEditor(typeof(ScriptBot))]
-    public class ScriptBotEditor : Editor
+    [CustomEditor(typeof(EventScriptSystem))]
+    public class EventScriptSystemEditor : Editor
     {
         
 
@@ -27,7 +27,7 @@ namespace Utj.UnityBotKun
             var isPlayProperty = serializedObject.FindProperty("m_isPlay");
 
 
-            var scriptBot = target as ScriptBot;
+            var scriptBot = target as EventScriptSystem;
             
             var index = scriptIdxProperty.intValue;                     
             var n = scriptsProperty.arraySize;
@@ -74,7 +74,9 @@ namespace Utj.UnityBotKun
             GUI.enabled = true;
             GUILayout.EndHorizontal();
 
-            EditorGUILayout.Slider(scriptBot.currentPosition,0, scriptBot.maxPosition);
+            
+
+            EditorGUILayout.Slider("PC",scriptBot.currentPosition,0, scriptBot.maxPosition);
         }
     }
 }

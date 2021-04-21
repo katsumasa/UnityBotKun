@@ -300,7 +300,7 @@ namespace Utj.UnityBotKun
             for(var i = 0; i < m_axisNames.Length; i++)
             {
                 var name = m_axisNames[i];
-                var axis = InputBot.instance.GetAxisRaw(name);                
+                var axis = BaseInputOverride.instance.GetAxisRaw(name);                
                 if (axis != m_axisValues[i] || m_isCompress == false)
                 {
                     m_axisValues[i] = axis;
@@ -320,9 +320,9 @@ namespace Utj.UnityBotKun
             // DummyInputではMouseでTouchをシュミレーションすることもあるので
             // DummyInputを参照する
             bool result = false;
-            for(var i = 0; i  < InputBot.instance.touchCount; i++)
+            for(var i = 0; i  < BaseInputOverride.instance.touchCount; i++)
             {
-                var touch = InputBot.instance.GetTouch(i);                
+                var touch = BaseInputOverride.instance.GetTouch(i);                
                 switch (touch.phase)
                 {
                     case TouchPhase.Began:
@@ -396,18 +396,18 @@ namespace Utj.UnityBotKun
         {
             bool result = false;
 
-            if (InputBot.instance.mousePresent)
+            if (BaseInputOverride.instance.mousePresent)
             {
 
                 // Mouseのボタン
-                for (var i = 0; i < InputBot.kMouseButtonCount; i++)
+                for (var i = 0; i < BaseInputOverride.kMouseButtonCount; i++)
                 {
-                    if (InputBot.instance.GetMouseButtonDown(i))
+                    if (BaseInputOverride.instance.GetMouseButtonDown(i))
                     {
                         m_scriptBuffer.AppendFormat("mousebutton {0} down\n", i);
                         result = true;
                     }
-                    else if (InputBot.instance.GetMouseButtonUp(i))
+                    else if (BaseInputOverride.instance.GetMouseButtonUp(i))
                     {
                         m_scriptBuffer.AppendFormat("mousebutton {0} up\n", i);
                         result = true;
@@ -416,10 +416,10 @@ namespace Utj.UnityBotKun
 
 
                 // Mouseの位置
-                if (InputBot.instance.mousePosition != m_mousePosition || m_isCompress == false)
+                if (BaseInputOverride.instance.mousePosition != m_mousePosition || m_isCompress == false)
                 {
-                    m_scriptBuffer.AppendFormat("mousepos {0} {1}\n", InputBot.instance.mousePosition.x, InputBot.instance.mousePosition.y);
-                    m_mousePosition = InputBot.instance.mousePosition;
+                    m_scriptBuffer.AppendFormat("mousepos {0} {1}\n", BaseInputOverride.instance.mousePosition.x, BaseInputOverride.instance.mousePosition.y);
+                    m_mousePosition = BaseInputOverride.instance.mousePosition;
                     result = true;
                 }
             }

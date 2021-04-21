@@ -12,15 +12,15 @@ namespace Utj.UnityBotKun
     /// 
     /// Scriptの実行順について
     /// 
-    /// ScriptBotで設定した入力を１フレーム遅らせて更新させる為に、InputBot -> ScriptBot->MonoBehaviourの順に動作するように優先度を設定する必要がある
+    /// ScriptBotで設定した入力を１フレーム遅らせて更新させる為に、BaseInputOverride -> EventScriptSystem->MonoBehaviourの順に動作するように優先度を設定する必要がある
     /// 
-    /// -900 InputBot　 前のフレームでScriptBotが設定したInputを更新
-    /// -500 ScriptBot　Inputを設定
+    /// -900 BaseInputOverride　 前のフレームでScriptBotが設定したInputを更新
+    /// -500 EventScriptSystem　Inputを設定
     ///    0 Default    Inputを参照
     ///
     /// </summary>
     [DefaultExecutionOrder(-900)]
-    public class InputBot : BaseInput
+    public class BaseInputOverride : BaseInput
     {
         //
         // staticプロパティの定義
@@ -43,7 +43,7 @@ namespace Utj.UnityBotKun
         /// <summary>
         /// BotInput Classのインスタンス
         /// </summary>
-        public static InputBot instance
+        public static BaseInputOverride instance
         {
             get;
             private set;
@@ -678,9 +678,6 @@ namespace Utj.UnityBotKun
         }
             
 
-
-
-
         /// <summary>
         /// Touchの疑似情報を発生させる
         /// </summary>
@@ -688,12 +685,25 @@ namespace Utj.UnityBotKun
         /// <param name="target"></param>        
         void SetTouchBegin(int fingerId, GameObject target)
         {
-            if (target != null && target.GetComponent<UIBehaviour>() != null)
-            {
-                var canvas = GetCanvas(target);
+            if (target != null) {
+                Canvas canvas;
+                if (target.GetComponent<UIBehaviour>() != null)
+                {
+                    canvas = GetCanvas(target);                                
+                }
+                else
+                {
+                    canvas = null;
+                }
+
                 if (canvas)
                 {
                     SetTouchBegin(fingerId, target, canvas);
+                }
+                else
+                {
+                    var position = Camera.main.WorldToScreenPoint(target.transform.position);
+                    SetTouchBegin(fingerId, position);
                 }
             }
         }

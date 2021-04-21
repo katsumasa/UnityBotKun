@@ -1,4 +1,4 @@
-﻿::: Button1から4迄を順にオブジェクト名でタッチする
+﻿:: Inputの単体テスト
 
 string buttonName
 int i 1
@@ -26,10 +26,10 @@ set i 1
 # Loop2
 add buttonName "Button" i
 touch begin fingerId buttonName
-wait sec 1
+wait sec 1.0
 
 touch ended fingerId
-wait sec 1
+wait sec 1.0
 
 add i i 1
 ifls i 5 goto Loop2
@@ -38,9 +38,10 @@ ifls i 5 goto Loop2
 print "座標指定でタッチするテスト"
 
 touch begin fingerId 400 850
-wait sec 1
+wait sec 1.0
 touch ended fingerId
-wait sec 1
+wait sec 1.0
+
 
 
 # MOUSE_TEST
@@ -49,19 +50,25 @@ print "マウスでボタンをクリックするテスト"
 
 mousepos 400 850
 mousebutton 0 down
-wait sec 1
+wait sec 1.0
 mousebutton 0 up
-wait sec 1
+wait sec 1.0
 
-# MOUSE_TEST2
+
 
 print "マウスオーバーテスト"
 mousepos 800 370
-wait sec 5
+wait sec 5.0
 
-print "マウスクリックテスト"
+print "マウスで3Dオブジェクトをクリックテスト"
 mousebutton 0 down
-wait sec 1
+wait sec 1.0
 mousebutton 0 up
-wait sec 1
+wait sec 1.0
 
+# MOUSE_TEST2
+print "3Dオブジェクトをタッチするテスト"
+touch begin fingerId "Cube"
+wait sec 1.0
+touch ended fingerId 
+wait sec 1.0

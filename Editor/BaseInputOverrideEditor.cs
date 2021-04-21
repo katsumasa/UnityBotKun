@@ -13,8 +13,8 @@ namespace Utj.UnityBotKun
     /// 注意事項
     /// OnInspectorGUIの実行されるタイミングの都合上、GetDownxxx()やGetUpxxx()のトリガーを取得出来ません。
     /// </summary>
-    [CustomEditor(typeof(InputBot))]
-    public class InputBotEditor :Editor
+    [CustomEditor(typeof(BaseInputOverride))]
+    public class BaseInputOverrideEditor :Editor
     {
         public override void OnInspectorGUI()
         {
@@ -22,7 +22,7 @@ namespace Utj.UnityBotKun
             EditorGUILayout.Separator();
             EditorGUILayout.LabelField("Input Infomation");
             EditorGUI.indentLevel++;
-            var inputBot = target as InputBot;
+            var inputBot = target as BaseInputOverride;
             if (Application.isPlaying)
             {
                 EditorGUILayout.LabelField("Axis(" +
@@ -34,7 +34,7 @@ namespace Utj.UnityBotKun
                 {
                     EditorGUI.indentLevel++;
                     EditorGUILayout.LabelField("position:" + inputBot.mousePosition);
-                    for (var i = 0; i < InputBot.kMouseButtonCount; i++)
+                    for (var i = 0; i < BaseInputOverride.kMouseButtonCount; i++)
                     {
                         EditorGUILayout.LabelField("button[" + i + "]:" + inputBot.GetMouseButton(i));
                     }

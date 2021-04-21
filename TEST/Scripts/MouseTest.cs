@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class MouseTest : MonoBehaviour,IPointerEnterHandler, IPointerClickHandler
+public class MouseTest : MonoBehaviour,IPointerEnterHandler, IPointerClickHandler, IDragHandler, IBeginDragHandler, IPointerDownHandler,IPointerUpHandler
 {
     Renderer renderer;
 
@@ -52,5 +52,25 @@ public class MouseTest : MonoBehaviour,IPointerEnterHandler, IPointerClickHandle
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("OnPointerClick");
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        Debug.Log("OnDrag");
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        Debug.Log("OnBeginDrag");
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Debug.Log("OnPointerDown");
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        Debug.Log("OnPointerUp");
     }
 }

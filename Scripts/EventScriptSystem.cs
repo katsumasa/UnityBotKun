@@ -15,15 +15,15 @@ namespace Utj.UnityBotKun
     /// 
     /// Scriptの実行順について
     /// 
-    /// ScriptBotで設定した入力を１フレーム遅らせて更新させる為に、InputBot -> ScriptBot->MonoBehaviourの順に動作するように優先度を設定する必要がある
+    /// ScriptBotで設定した入力を１フレーム遅らせて更新させる為に、BaseInputOverride -> EventScriptSystem->MonoBehaviourの順に動作するように優先度を設定する必要がある
     /// 
-    /// -900 InputBot　 前のフレームでScriptBotが設定したInputを更新
-    /// -500 ScriptBot　Inputを設定
+    /// -900 BaseInputOverride　 前のフレームでScriptBotが設定したInputを更新
+    /// -500 EventScriptSystem　Inputを設定
     ///    0 Default    Inputを参照
     ///
     /// </summary>
     [DefaultExecutionOrder(-500)]
-    public class ScriptBot : MonoBehaviour
+    public class EventScriptSystem : MonoBehaviour
     {
         //readonly string scriptRoot = Path.Combine(Application.streamingAssetsPath, "UnityAutoTesterKun");
 
@@ -133,7 +133,7 @@ namespace Utj.UnityBotKun
         int m_waitSceneChanged;
 
         /// <summary>
-        /// InputBot.instance.isOverrideInputの値の退避先
+        /// BaseInputOverride.instance.isOverrideInputの値の退避先
         /// </summary>
         bool m_overrideInputBackup;
 
@@ -286,7 +286,7 @@ namespace Utj.UnityBotKun
         /// <summary>
         /// ScriptBotのインスタンス
         /// </summary>
-        public static ScriptBot instance
+        public static EventScriptSystem instance
         {
             get;
             private set;
@@ -322,8 +322,8 @@ namespace Utj.UnityBotKun
             isPlay = true;
             m_isStop= false;
             isError = false;
-            m_overrideInputBackup = InputBot.instance.isOverrideInput;
-            InputBot.instance.isOverrideInput = true;
+            m_overrideInputBackup = BaseInputOverride.instance.isOverrideInput;
+            BaseInputOverride.instance.isOverrideInput = true;
 
 
 
@@ -391,7 +391,7 @@ namespace Utj.UnityBotKun
             {
                 while (true)
                 {
-                    if (InputBot.instance != null)
+                    if (BaseInputOverride.instance != null)
                     {                        
                         Play();
                         break;
@@ -995,31 +995,31 @@ namespace Utj.UnityBotKun
                 if (IsString(args[3]))
                 {
                     var name = GetString(args[3]);
-                    InputBot.instance.SetTouchBegin(fingerId, name);
+                    BaseInputOverride.instance.SetTouchBegin(fingerId, name);
                 }
                 else
                 {
                     var position = new Vector2(GetFloat(args[3]), GetFloat(args[4]));
                     if (args.Length == 5)
                     {
-                        InputBot.instance.SetTouchBegin(fingerId, position);
+                        BaseInputOverride.instance.SetTouchBegin(fingerId, position);
                     }
                     else if(args.Length == 6)
                     {
-                        InputBot.instance.SetTouchBegin(fingerId, position,
+                        BaseInputOverride.instance.SetTouchBegin(fingerId, position,
                             GetFloat(args[5])
                             );
                     }
                     else if(args.Length == 7)
                     {
-                        InputBot.instance.SetTouchBegin(fingerId, position,
+                        BaseInputOverride.instance.SetTouchBegin(fingerId, position,
                             GetFloat(args[5]),
                             GetFloat(args[6])
                             );
                     }
                     else if(args.Length == 8)
                     {
-                        InputBot.instance.SetTouchBegin(fingerId, position, 
+                        BaseInputOverride.instance.SetTouchBegin(fingerId, position, 
                             GetFloat(args[5]), 
                             GetFloat(args[6]),
                             GetFloat(args[7])
@@ -1027,7 +1027,7 @@ namespace Utj.UnityBotKun
                     }
                     else if(args.Length == 9)
                     {
-                        InputBot.instance.SetTouchBegin(fingerId, position,
+                        BaseInputOverride.instance.SetTouchBegin(fingerId, position,
                             GetFloat(args[5]),
                             GetFloat(args[6]),
                             GetFloat(args[7]),
@@ -1036,7 +1036,7 @@ namespace Utj.UnityBotKun
                     }
                     else if(args.Length == 10)
                     {
-                        InputBot.instance.SetTouchBegin(fingerId, position,
+                        BaseInputOverride.instance.SetTouchBegin(fingerId, position,
                             GetFloat(args[5]),
                             GetFloat(args[6]),
                             GetFloat(args[7]),
@@ -1046,7 +1046,7 @@ namespace Utj.UnityBotKun
                     }
                     else
                     {
-                        InputBot.instance.SetTouchBegin(fingerId, position,
+                        BaseInputOverride.instance.SetTouchBegin(fingerId, position,
                             GetFloat(args[5]),
                             GetFloat(args[6]),
                             GetFloat(args[7]),
@@ -1062,27 +1062,27 @@ namespace Utj.UnityBotKun
             else if(string.Compare(type,"move") == 0)
             {
                 var position = new Vector2(GetFloat(args[3]), GetFloat(args[4]));
-                InputBot.instance.SetTouchMove(fingerId,position);
+                BaseInputOverride.instance.SetTouchMove(fingerId,position);
                 if (args.Length == 5)
                 {
-                    InputBot.instance.SetTouchMove(fingerId, position);
+                    BaseInputOverride.instance.SetTouchMove(fingerId, position);
                 }
                 else if (args.Length == 6)
                 {
-                    InputBot.instance.SetTouchMove(fingerId, position,
+                    BaseInputOverride.instance.SetTouchMove(fingerId, position,
                         GetFloat(args[5])
                         );
                 }
                 else if (args.Length == 7)
                 {
-                    InputBot.instance.SetTouchMove(fingerId, position,
+                    BaseInputOverride.instance.SetTouchMove(fingerId, position,
                         GetFloat(args[5]),
                         GetFloat(args[6])
                         );
                 }
                 else if (args.Length == 8)
                 {
-                    InputBot.instance.SetTouchMove(fingerId, position,
+                    BaseInputOverride.instance.SetTouchMove(fingerId, position,
                         GetFloat(args[5]),
                         GetFloat(args[6]),
                         GetFloat(args[7])
@@ -1092,7 +1092,7 @@ namespace Utj.UnityBotKun
             // Ended
             else if (string.Compare(type,"ended") == 0)
             {
-                InputBot.instance.SetTouchEnded(fingerId);
+                BaseInputOverride.instance.SetTouchEnded(fingerId);
             }
             return true;
         }
@@ -1110,7 +1110,7 @@ namespace Utj.UnityBotKun
             var name = GetString(args[1]);
             var type = GetString(args[2]);            
             bool isDown = string.Compare(type,"down") == 0;
-            InputBot.instance.SetButtonDown(name, isDown);
+            BaseInputOverride.instance.SetButtonDown(name, isDown);
             return true;
         }
 
@@ -1125,7 +1125,7 @@ namespace Utj.UnityBotKun
         bool CommandAxisRaw(string[] args)
         {
             string name = GetString(args[1]);
-            InputBot.instance.SetAxisRaw(name, GetFloat(args[2]));
+            BaseInputOverride.instance.SetAxisRaw(name, GetFloat(args[2]));
             return true;
         }
 
@@ -1142,11 +1142,11 @@ namespace Utj.UnityBotKun
             var type = GetString(args[2]);
             if (string.Compare(type,"down") == 0)
             {
-                InputBot.instance.SetMouseButtonDown(GetInt(args[1]));
+                BaseInputOverride.instance.SetMouseButtonDown(GetInt(args[1]));
             }
             else
             {
-                InputBot.instance.SetMouseButtonUp(GetInt(args[1]));
+                BaseInputOverride.instance.SetMouseButtonUp(GetInt(args[1]));
             }
             return true;
         }
@@ -1162,7 +1162,7 @@ namespace Utj.UnityBotKun
         bool CommandMousePosition(string[] args)
         {
             var position = new Vector2(GetFloat(args[1]), GetFloat(args[2]));
-            InputBot.instance.SetMousePosition(position);
+            BaseInputOverride.instance.SetMousePosition(position);
             return true;
         }
 
@@ -1202,7 +1202,7 @@ namespace Utj.UnityBotKun
             if ((m_isStop) ||(m_textAssetReader == null) || (m_textAssetReader.EndOfStream))
             {
                 isPlay = false;
-                InputBot.instance.isOverrideInput = m_overrideInputBackup;
+                BaseInputOverride.instance.isOverrideInput = m_overrideInputBackup;
                 return;
             }
 

@@ -43,7 +43,7 @@ namespace Utj.UnityBotKun
         protected override void Start()
         {
             base.Start();
-            inputOverride = InputBot.instance;
+            inputOverride = BaseInputOverride.instance;
         }
 
 

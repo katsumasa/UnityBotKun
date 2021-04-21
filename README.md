@@ -2,13 +2,12 @@
 
 ## 概要
 
-デバックやテストプレイで、同じ動作を何度も繰り返し行う開発者やデバッカーの皆様へ。</br>
-本ツールは、Unity上でイベントスクリプトを使用して自動的にアプリケーションを制御することが出来ます。
-イベントスクリプトを書いて、テストを自動化しましょう。
+アプリケーションのテストを全自動で行う為のEventScriptSystemです。</br>
+**イベントスクリプトを書いて、アプリケーションのテストを自動化しましょう。**
 
 ## 本ライブラリで出来ること
 
-- 独自のイベントスクリプトを通して、Unityで開発しているアプリケーションの[EventSystem](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.EventSystem.html)を通してTouchやキー入力を疑似的に発生させることが出来る。　[^1]
+- 独自のイベントスクリプトを通して、アプリケーションへの操作を自動化出来る。[^1]
 - プレイ内容をイベントスクリプトへ出力することで、簡易的なリプレイ機能を実現することが出来る。[^2]
 </br>
 
@@ -26,14 +25,24 @@
 1. 本リポジトリを使用したいUnityProjectのAsset以下に配置します。</br></br>
 2. Scene上に、`EventSystemBot` を配置します。元々Scene上にある`EventSystem`は無効化して下さい。</br></br>
 ![7bb999acffa06c965befe08d2e0dfb32](https://user-images.githubusercontent.com/29646672/114997568-f414e000-9eda-11eb-9019-e399679cc537.gif)</br></br>
-3. 簡易スクリプトを作成します。</br></br>
-4. 簡易スクリプトをEventSystemBot->ScriptBot->Scriptsに登録します。</br></br>
+3. [イベントスクリプト]を作成します。イベントスクリプトの記述情報に関しては、[こちら](https://github.com/katsumasa/UnityBotKun/wiki/EventScript)をご確認下さい。また、プレイ中の入力を記録し、イベントスクリプトに書き出すことも可能です。</br></br>
+4. イベントスクリプトをEventSystemBot->ScriptBot->Scriptsに登録します。</br></br>
 ![4cc62410ddd69f7453220c85b54bae02](https://user-images.githubusercontent.com/29646672/115168940-9f9a7c00-a0f7-11eb-9f37-8630c06d885c.gif)</br></br>
 5. Unity EditorをPlay Modeで実行し、任意のタイミングでScriptBiotのPlayボタンを押します。</br></br>
 ![223d79121d8f60d04063952a468103fb](https://user-images.githubusercontent.com/29646672/115173162-9f9f7980-a101-11eb-9bc1-88bb9615ca79.gif)</br></br>
-6. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所はInputBot.instanceに置き換えて下さい。
+6. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所は`Utj.UnityBotKun.InputBot.instance`に置き換えて下さい。</br> example</br>
 
-以上</br></br>
+```c#
+var horizontal = Input.GetAxsisRow("Horizontal");
+```
+
+```c#
+using Utj.UnityBotKun;
+...
+var horizontal = InputBot.instance.GetAxsisRow("Horizontal");
+```
+
+以上です。</br></br>
 
 ## Event System Bot
 
@@ -53,9 +62,9 @@ EventSystemBotはEventSystem,StandaloneInputModuleOverrider,ScriptBot,InputBot,I
 Axisやボタンの名称を変更する場合はこちらで設定を行います。
 詳細に関しては、[スクリプトリファレンス](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.StandaloneInputModule.html)をご確認下さい。</br></br>
 
-### Script Bot
+### EventScriptSystem
 
-![img](https://user-images.githubusercontent.com/29646672/115170588-f3a75f80-a0fb-11eb-8e37-0647a6b7389f.png)
+![img](https://user-images.githubusercontent.com/29646672/115514564-31081a80-a2bf-11eb-9ca6-991f5ed9b4e2.png)
 
 イベントスクリプトの制御を行います。
 
@@ -66,11 +75,12 @@ Axisやボタンの名称を変更する場合はこちらで設定を行いま�
 - Play Scipt</br>実行する、イベントスクリプトを選択します。
 - Play</br>イベントスクリプトを実行します。実行する為には、アプリケーションが実行中(Application.isPlay == true)である必要があります。
 - Stop</br>実行中のイベントスクリプトを停止します。
+- PC</br>イベントスクリプトの実行位置(行)を表示します。
 </br></br>
 
-### Input Bot
+### BaseInputOverride
 
-![img](https://user-images.githubusercontent.com/29646672/115174008-66680900-a103-11eb-966d-a2922eebb54e.png)
+![img](https://user-images.githubusercontent.com/29646672/115514881-8a704980-a2bf-11eb-87e6-11e84ba400ef.png)
 
 InputをHackするコンポーネントです。
 
@@ -111,23 +121,23 @@ Sceneを跨いでEventSystemBotを使用する為のコンポーネントです�
 
 ## イベントスクリプト
 
-イベントスクリプトでは、Touch,Mouse,Button,AxisRawを制御する為の命令に加えて、変数、四則演算、条件分岐、ジャンプ等のプログラマブルな記述を行うことが出来ます。
+イベントスクリプトでは、`Touch`,`Mouse`,`Button`,`AxisRaw`を制御する為の命令に加えて、変数、四則演算、条件分岐、ジャンプ等のプログラマブルな記述を行うことが出来ます。
 ゲーム業界でスクリプターの経験がある人には親しみやすい記述方式になっていると思います。
-詳しくは、[イベントスクリプトリファレンス](https://github.com/katsumasa/UnityBotKun/wiki/Event-Script-%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9)をご確認下さい。
+詳しくは、[イベントスクリプトリファレンス](https://github.com/katsumasa/UnityBotKun/wiki)をご確認下さい。
 
 ## FAQ
 
 - Q</br>[New Input System](https://docs.unity3d.com/Manual/com.unity.inputsystem.html)に対応していますか？
 - A</br>対応していません。
 
-- Q</br>InputRecorderで作成したイベントスクリプトを再生しても、全く同じ結果になりません。
-- A</br>InpurRecorderはInputのみを記録している為、アクションゲーム等、結果に対して様々な要員があるアプリケーションでは同じ結果にならない場合があります。
+- Q</br>`InputRecorder`で作成したイベントスクリプトを再生しても、全く同じ結果になりません。
+- A</br>`InpurRecorder`はInputのみを記録しています。処理落ちや乱数など、結果に対して様々な要員がある為、同じ結果にならない場合があります。
 
 - Q</br>イベントスクリプトを実行しても、Inputが反映されません。
-- A</br>他のEventSystemが有効になっている可能性があります。実行時にEventSystemBot以外のEventSystemがScene上に存在しないか確認してみて下さい。また、Standalone Iput Module OverrideのForce Module Activeを有効にすることで改善する可能性があります。
+- A</br>他の`EventSystem`が有効になっている可能性があります。実行時に`EventSystemBot`以外の`EventSystem`が`Scene`上に存在しないか確認してみて下さい。また、`Standalone Iput Module Override`の`Force Module Active`を有効にすることで改善する可能性があります。
 
-- Q</br>uGUIにはタッチやマウスのクリックが反応しますが、他のオブジェクトに反応しません。
-- A</br>EventSystemを利用している為、MonoBehaviour.OnMouseXXX系は利用出来ません。[IPointerEnterHandler](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.IPointerEnterHandler.html)を継承する等してイベントをキャッチして下さい。また、Cameraオブジェクトに[PhysicsRaycaster](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.PhysicsRaycaster.html)や[Physics2DRaycaster](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.Physics2DRaycaster.html)をAddすることもお忘れなく。
+- Q</br>`uGUI`にはタッチやマウスのクリックが反応しますが、3D等他のオブジェクトに反応しません。
+- A</br>`EventSystem`を利用している為、`MonoBehaviour.OnMouseXXX`系のイベントは発生しません。[IPointerEnterHandler](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.IPointerEnterHandler.html)を継承する等してイベントをキャッチして下さい。また、Cameraオブジェクトに[PhysicsRaycaster](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.PhysicsRaycaster.html)や[Physics2DRaycaster](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.Physics2DRaycaster.html)をAddすることもお忘れなく。
 
 [^1]:リリース済みのアプリケーションを制御出来る訳ではありません。）
 [^2]:Input単体での再現の為、再現性の精度は低いです。
