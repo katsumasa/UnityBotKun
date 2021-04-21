@@ -2,8 +2,12 @@
 
 ## 概要
 
-アプリケーションのテストを全自動で行う為のEventScriptSystemです。</br>
+<img src ="https://user-images.githubusercontent.com/29646672/115516748-631a7c00-a2c1-11eb-8743-9e283c68a666.png" width="256">
+
+Unityで開発しているアプリケーションのテストを全自動で行う為のEventScriptSystemです。</br>
 **イベントスクリプトを書いて、アプリケーションのテストを自動化しましょう。**
+
+***
 
 ## 本ライブラリで出来ること
 
@@ -30,7 +34,7 @@
 ![4cc62410ddd69f7453220c85b54bae02](https://user-images.githubusercontent.com/29646672/115168940-9f9a7c00-a0f7-11eb-9f37-8630c06d885c.gif)</br></br>
 5. Unity EditorをPlay Modeで実行し、任意のタイミングでScriptBiotのPlayボタンを押します。</br></br>
 ![223d79121d8f60d04063952a468103fb](https://user-images.githubusercontent.com/29646672/115173162-9f9f7980-a101-11eb-9bc1-88bb9615ca79.gif)</br></br>
-6. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所は`Utj.UnityBotKun.InputBot.instance`に置き換えて下さい。</br> example</br>
+6. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所は`Input2`に置き換えて下さい。</br> example</br>
 
 ```c#
 var horizontal = Input.GetAxsisRow("Horizontal");
@@ -39,7 +43,7 @@ var horizontal = Input.GetAxsisRow("Horizontal");
 ```c#
 using Utj.UnityBotKun;
 ...
-var horizontal = InputBot.instance.GetAxsisRow("Horizontal");
+var horizontal = Input2.GetAxsisRow("Horizontal");
 ```
 
 以上です。</br></br>
