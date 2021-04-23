@@ -40,6 +40,7 @@ int i 0
 touch begin 0 "Button1"
 wait sec 0.1
 touch ended 0
+add i i 1
 ifls i 100 goto LOOP1
 ```
 
@@ -50,6 +51,12 @@ ifls i 100 goto LOOP1
 ### Unityのバージョン
 
 - Unity2019.4.22f1
+
+### 動作確認済み端末
+
+#### Android
+
+- Pixel4 XL
 
 ## 使用方法
 
@@ -62,7 +69,7 @@ ifls i 100 goto LOOP1
 3. [イベントスクリプト]を作成します。イベントスクリプトの記述情報に関しては、[こちら](https://github.com/katsumasa/UnityBotKun/wiki/EventScript)をご確認下さい。また、プレイ中の入力を記録し、イベントスクリプトに書き出すことも可能です。</br></br>
 4. イベントスクリプトをEventSystemBot->EventScriptSystem->Scriptsに登録します。</br></br>
 ![4cc62410ddd69f7453220c85b54bae02](https://user-images.githubusercontent.com/29646672/115168940-9f9a7c00-a0f7-11eb-9f37-8630c06d885c.gif)</br></br>
-1. Unity EditorをPlay Modeで実行し、任意のタイミングでEventScriptSystemのPlayボタンを押します。</br></br>
+5. Unity EditorをPlay Modeで実行し、任意のタイミングでEventScriptSystemのPlayボタンを押します。</br></br>
 ![223d79121d8f60d04063952a468103fb](https://user-images.githubusercontent.com/29646672/115173162-9f9f7980-a101-11eb-9bc1-88bb9615ca79.gif)</br></br>
 6. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所は`Input2`に置き換えて下さい。</br> example</br>
 
