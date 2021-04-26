@@ -10,10 +10,11 @@
 
 ## 本ライブラリで出来ること
 
-- 独自のイベントスクリプトを通することで、任意の操作をアプリケーション上で実行する。[^1]
+- 独自のイベントスクリプトを記述することで、その内容に沿った任意の操作をアプリケーション上で実行する。[^1]
 - アプリケーション上の操作をイベントスクリプトに書き出す。[^2]
 
-アプリケーションのチュートリアルの実装や、アプリケーションのテスト等で使用することを想定しています。
+※アプリケーションのチュートリアルの実装や、アプリケーションのテスト等で使用することを想定しています。</br>
+
 </br>
 
 ## イベントスクリプトで出来ること
@@ -44,9 +45,9 @@ add i i 1
 ifls i 100 goto LOOP1
 ```
 
-イベントスクリプトに関してはWiki上で詳細に説明していますので、[こちら](https://github.com/katsumasa/UnityBotKun/wiki)をご確認下さい。
+イベントスクリプトに関してはWiki上で詳細に説明していますので、[こちら](https://github.com/katsumasa/UnityBotKun/wiki)をご確認下さい。</br></br>
 
-## 開発環境
+## 動作環境
 
 ### Unityのバージョン
 
@@ -57,11 +58,15 @@ ifls i 100 goto LOOP1
 #### Android
 
 - Pixel4 XL
+</br></br>
 
 ## 使用方法
 
-既存のEventSystemオブジェクトとEventSystemBotオブジェクトを差し替える必要があります。
-具体的な手順は下記の通りです。
+- UnityEditorとUnityPlayer(実機)の両方で実行出来ます。
+- 既存のEventSystemオブジェクトとEventSystemBotオブジェクトを差し替える必要があります。
+- 具体的な手順は下記の通りです。
+
+### インストール方法
 
 1. 本リポジトリを使用したいUnityProjectのAsset以下に配置します。</br></br>
 2. Scene上に、`EventSystemBot` を配置します。元々Scene上にある`EventSystem`は無効化して下さい。</br></br>
@@ -69,9 +74,7 @@ ifls i 100 goto LOOP1
 3. [イベントスクリプト]を作成します。イベントスクリプトの記述情報に関しては、[こちら](https://github.com/katsumasa/UnityBotKun/wiki/EventScript)をご確認下さい。また、プレイ中の入力を記録し、イベントスクリプトに書き出すことも可能です。</br></br>
 4. イベントスクリプトをEventSystemBot->EventScriptSystem->Scriptsに登録します。</br></br>
 ![4cc62410ddd69f7453220c85b54bae02](https://user-images.githubusercontent.com/29646672/115168940-9f9a7c00-a0f7-11eb-9f37-8630c06d885c.gif)</br></br>
-5. Unity EditorをPlay Modeで実行し、任意のタイミングでEventScriptSystemのPlayボタンを押します。</br></br>
-![223d79121d8f60d04063952a468103fb](https://user-images.githubusercontent.com/29646672/115173162-9f9f7980-a101-11eb-9bc1-88bb9615ca79.gif)</br></br>
-6. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所は`Input2`に置き換えて下さい。</br> example</br>
+5. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所は`Input2`に置き換えて下さい。</br> example</br>
 
 ```c#
 var horizontal = Input.GetAxsisRow("Horizontal");
@@ -83,11 +86,27 @@ using Utj.UnityBotKun;
 var horizontal = Input2.GetAxsisRow("Horizontal");
 ```
 
-以上です。</br></br>
+### UnityEditordでの実行方法
 
-## Event System Bot
+Unity EditorをPlay Modeで実行し、任意のタイミングでEventScriptSystemのPlayボタンを押します。</br></br>
+![223d79121d8f60d04063952a468103fb](https://user-images.githubusercontent.com/29646672/115173162-9f9f7980-a101-11eb-9bc1-88bb9615ca79.gif)</br></br>
 
-EventSystemBotはEventSystem,StandaloneInputModuleOverrider,ScriptBot,InputBot,InputRecorder,DontDestoryといいた複数のコンポーネントで構成されています。
+### UnityPlayer(実機)での実行方法
+
+UnityBotKun Remote Clientを使ってApplicationをUnityEditorからリモートで制御し、イベントスクリプトの実行、記録を行います。UnityBotKun RemoteClientは`Window->UnityBotKun->RemoteClient`で起動します。</br>
+
+### 注意時効
+
+アプリケーションをビルドする際にDevelopmentBuildを有効にしてビルドを行って下さい。
+</br></br>
+
+## Component
+
+ここでは、`EventSystemBot`　にAddされているコンポーネントを説明します。
+
+### Event System Bot
+
+EventSystemBotはEventSystem,StandaloneInputModuleOverrider,ScriptBot,InputBot,InputRecorder,DontDestory等の複数のコンポーネントで構成されています。
 
 ### EventSystem
 
@@ -160,11 +179,31 @@ Sceneを跨いでEventSystemBotを使用する為のコンポーネントです�
 - Is Dont Destroy On Load
   Scene切り替え時のEventSystemBotを破棄したくない場合は有効にする必要があります。
 
+### Remote Player
+
+実機上で動作させる場合にUnityPlayer<->UnityEditor間の動作を行う為のコンポーネントです。
+
+## UnityBotKun Remote Player
+
+<img width="426" alt="RemoteClient" src="https://user-images.githubusercontent.com/29646672/116061453-d48d6c80-a6bd-11eb-93f5-2dcfc7384654.png">
+
+UnityPlayer(実機)上のEventSystemBotをUnityEditorから制御する為のWindowです。
+
+① Refleshボタン。Player上のUnityBotKunの情報を取得します。</br>
+② イベントスクリプト実行ボタン。④で指定されたイベントスクリプトを実行/停止を行います。
+③ 録画ボタン。Player上で発生したInput情報の記録/停止を行います。記録内容は停止時にEditor上でTextAssetとして保存します。</br>
+④ イベントスクリプト選択リスト。Player上で実行するイベントを選択します。</br>
+⑤ イベントスクリプトオブジェクトフィールド。Player上に転送するイベントスクリプト。</br>
+⑥ 追加ボタン。⑤で指定したイベントスクリプトをPlayerへ転送します。</br>
+
+</br></br>
+
 ## イベントスクリプト
 
 イベントスクリプトでは、`Touch`,`Mouse`,`Button`,`AxisRaw`を制御する為の命令に加えて、変数、四則演算、条件分岐、ジャンプ等のプログラマブルな記述を行うことが出来ます。
 ゲーム業界でスクリプターの経験がある人には親しみやすい記述方式になっていると思います。
 詳しくは、[イベントスクリプトリファレンス](https://github.com/katsumasa/UnityBotKun/wiki)をご確認下さい。
+</br></br>
 
 ## FAQ
 

@@ -18,7 +18,7 @@ namespace Utj.UnityBotKun
     /// Programed by Katsumasa.Kimura
     /// </summary>
     public class InputRecorder : MonoBehaviour
-    {   
+    {
         enum Wait
         {
             Frame,
@@ -33,7 +33,7 @@ namespace Utj.UnityBotKun
             "Horizontal",
             "Vertical",
         };
-        
+
         [SerializeField, Tooltip("記録するボタンの名称")]
         string[] m_buttonNames =
         {
@@ -66,6 +66,12 @@ namespace Utj.UnityBotKun
 
         [SerializeField, Tooltip("Touchを記録するか")]
         bool m_isRecordTouch = true;
+
+
+        public static InputRecorder instance {
+            get;
+            private set;
+        }
 
 
         /// <summary>
@@ -202,7 +208,17 @@ namespace Utj.UnityBotKun
             }
         }
 
-
+        private void Awake()
+        {
+            if(instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(this);
+            }
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -219,6 +235,14 @@ namespace Utj.UnityBotKun
             }
         }
 
+
+        private void OnDestroy()
+        {
+            if(instance == this)
+            {
+                instance = null;
+            }
+        }
 
         /// <summary>
         /// Inputイベントを記録する
