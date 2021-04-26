@@ -4,7 +4,7 @@ string buttonName
 int i 1
 
 
-goto MOUSE_TEST2
+:: goto MOUSE_TEST2
 
 print "Buttonを1frame間隔で順にTouchするテスト"
 

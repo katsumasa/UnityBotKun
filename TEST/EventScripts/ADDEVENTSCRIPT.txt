@@ -1,0 +1,2 @@
+﻿print "Add Event Script"
+wait frame 1
