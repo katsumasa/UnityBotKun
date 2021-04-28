@@ -2,8 +2,6 @@
 
 ## 概要
 
-<img src ="https://user-images.githubusercontent.com/29646672/115516748-631a7c00-a2c1-11eb-8743-9e283c68a666.png" width="256">
-
 簡単なイベントスクリプトを記述することで、アプリケーション上でその内容に沿った動作を実行します。
 
 ***
