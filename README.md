@@ -2,6 +2,9 @@
 
 ## 概要
 
+<img width="512" alt="BotKun" src="https://user-images.githubusercontent.com/29646672/117268534-533e9280-ae92-11eb-913a-81dcd2f3daf1.png">
+
+</br></br>
 簡単なイベントスクリプトを記述することで、アプリケーション上でその内容に沿った動作を実行します。
 
 ***
