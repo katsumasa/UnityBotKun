@@ -9,6 +9,7 @@ using UnityEditor.Networking.PlayerConnection;
 #if UNITY_2020_1_OR_NEWER
 using ConnectionUtility = UnityEditor.Networking.PlayerConnection.PlayerConnectionGUIUtility;
 using ConnectionGUILayout = UnityEditor.Networking.PlayerConnection.PlayerConnectionGUILayout;
+using UnityEngine.Networking.PlayerConnection;
 #else
 using ConnectionUtility = UnityEditor.Experimental.Networking.PlayerConnection.EditorGUIUtility;
 using ConnectionGUILayout = UnityEditor.Experimental.Networking.PlayerConnection.EditorGUILayout;
