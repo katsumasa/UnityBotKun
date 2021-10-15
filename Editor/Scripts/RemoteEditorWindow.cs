@@ -50,7 +50,7 @@ namespace Utj.UnityBotKun
         [SerializeField] TextAsset m_uploadTextAsset;
 
 
-        [MenuItem("Window/UnityBotKun/RemoteClient")]
+        [MenuItem("Window/UTJ/UnityBotKun/RemoteClient")]
         static void OpenWindow()
         {
             m_window = (RemoteEditorWindow)EditorWindow.GetWindow(typeof(RemoteEditorWindow));
