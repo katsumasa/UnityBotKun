@@ -11,6 +11,11 @@
   "description": "By writing a simple event script, you can automatically execute your application.",
   "dependencies": {
   },
+  "author": {
+    "name": "Katsumasa.Kimura",
+    "email": "katsumasa@unity3d.com",
+    "url": "https://github.com/katsumasa"
+  },
   "relatedPackages": {
   },
   "upmCi": {
