@@ -1,5 +1,7 @@
 # UnityBotKun
 
+![GitHub package.json version](https://img.shields.io/github/package-json/v/katsumasa/UnityBotKun)
+
 ## 概要
 
 <img width="512" alt="BotKun" src="https://user-images.githubusercontent.com/29646672/117268534-533e9280-ae92-11eb-913a-81dcd2f3daf1.png">
