@@ -1,7 +1,11 @@
 {
-    "name": "UnityBotKun",
-    "references": [],
-    "includePlatforms": [],
+    "name": "UTJ.UnityBotKun.Editor",
+    "references": [
+        "GUID:f817269c8baffc44d831e9e9f9a0bdbd"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

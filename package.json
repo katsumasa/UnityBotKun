@@ -1,0 +1,23 @@
+{
+  "name": "com.utj.unitybotkun",
+  "displayName": "UnityBotKun",
+  "version": "0.1.0",
+  "unity": "2019.3",
+  "keywords": [
+    "unity",
+    "editor",
+    "tools"
+  ],
+  "description": "By writing a simple event script, you can automatically execute your application.",
+  "dependencies": {
+  },
+  "relatedPackages": {
+  },
+  "upmCi": {
+  },
+  "repository": {
+    "url": "https://github.com/katsumasa/UnityBotKun.git",
+    "type": "git",
+    "revision": ""
+  }
+}
