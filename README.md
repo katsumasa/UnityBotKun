@@ -89,7 +89,7 @@ using Utj.UnityBotKun;
 var horizontal = Input2.GetAxsisRow("Horizontal");
 ```
 
-### UnityEditordでの実行方法
+### UnityEditorでの実行方法
 
 Unity EditorをPlay Modeで実行し、任意のタイミングでEventScriptSystemのPlayボタンを押します。</br></br>
 ![223d79121d8f60d04063952a468103fb](https://user-images.githubusercontent.com/29646672/115173162-9f9f7980-a101-11eb-9bc1-88bb9615ca79.gif)</br></br>
