@@ -66,16 +66,16 @@ ifls i 100 goto LOOP1
 ## 使用方法
 
 - UnityEditorとUnityPlayer(実機)の両方で実行出来ます。
-- 既存のEventSystemオブジェクトとEventSystemBotオブジェクトを差し替える必要があります。
+- 既存の`Event System`オブジェクトと`Event System Bot`オブジェクトを差し替える必要があります。
 - 具体的な手順は下記の通りです。
 
 ### インストール方法
 
 1. 本リポジトリを使用したいUnityProjectのAsset以下に配置します。</br></br>
-2. Scene上に、`EventSystemBot` を配置します。元々Scene上にある`EventSystem`は無効化して下さい。</br></br>
+2. Scene上に、`Event System Bot` を配置します。元々Scene上にある`EventSystem`は無効化して下さい。</br></br>
 ![7bb999acffa06c965befe08d2e0dfb32](https://user-images.githubusercontent.com/29646672/114997568-f414e000-9eda-11eb-9019-e399679cc537.gif)</br></br>
 3. [イベントスクリプト]を作成します。イベントスクリプトの記述情報に関しては、[こちら](https://github.com/katsumasa/UnityBotKun/wiki/EventScript)をご確認下さい。また、プレイ中の入力を記録し、イベントスクリプトに書き出すことも可能です。</br></br>
-4. イベントスクリプトをEventSystemBot->EventScriptSystem->Scriptsに登録します。</br></br>
+4. イベントスクリプトを`Event System Bot`->`Event Script System`->`Scripts`に登録します。</br></br>
 ![4cc62410ddd69f7453220c85b54bae02](https://user-images.githubusercontent.com/29646672/115168940-9f9a7c00-a0f7-11eb-9f37-8630c06d885c.gif)</br></br>
 5. プログラム中に[Input](https://docs.unity3d.com/ja/2018.4/ScriptReference/Input.html)を使用している箇所は`Input2`に置き換えて下さい。</br> example</br>
 
@@ -91,7 +91,7 @@ var horizontal = Input2.GetAxsisRow("Horizontal");
 
 ### UnityEditorでの実行方法
 
-Unity EditorをPlay Modeで実行し、任意のタイミングでEventScriptSystemのPlayボタンを押します。</br></br>
+Unity EditorをPlay Modeで実行し、任意のタイミングで`Event Script System`のPlayボタンを押します。</br></br>
 ![223d79121d8f60d04063952a468103fb](https://user-images.githubusercontent.com/29646672/115173162-9f9f7980-a101-11eb-9bc1-88bb9615ca79.gif)</br></br>
 
 ### UnityPlayer(実機)での実行方法
@@ -105,13 +105,13 @@ UnityBotKun Remote Clientを使ってApplicationをUnityEditorからリモート
 
 ## Component
 
-ここでは、`EventSystemBot`　にAddされているコンポーネントを説明します。
+ここでは、`Event System Bot`　にAddされているコンポーネントを説明します。
 
 ### Event System Bot
 
-EventSystemBotはEventSystem,StandaloneInputModuleOverrider,ScriptBot,InputBot,InputRecorder,DontDestory等の複数のコンポーネントで構成されています。
+`Event System Bot`はEventSystem,StandaloneInputModuleOverrider,ScriptBot,InputBot,InputRecorder,DontDestory等の複数のコンポーネントで構成されています。
 
-### EventSystem
+### Event System
 
 ![img](https://user-images.githubusercontent.com/29646672/115169576-65ca7500-a0f9-11eb-95cf-c1f649bcf857.png)
 
@@ -125,7 +125,7 @@ EventSystemBotはEventSystem,StandaloneInputModuleOverrider,ScriptBot,InputBot,I
 Axisやボタンの名称を変更する場合はこちらで設定を行います。
 詳細に関しては、[スクリプトリファレンス](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.StandaloneInputModule.html)をご確認下さい。</br></br>
 
-### EventScriptSystem
+### Event Script System
 
 ![img](https://user-images.githubusercontent.com/29646672/115514564-31081a80-a2bf-11eb-9ca6-991f5ed9b4e2.png)
 
@@ -175,12 +175,12 @@ InputをHackするコンポーネントです。
 
 ### Dont Destory
 
-Sceneを跨いでEventSystemBotを使用する為のコンポーネントです。
+Sceneを跨いで`Event System Bot`を使用する為のコンポーネントです。
 
 ![img](https://user-images.githubusercontent.com/29646672/115174476-44bb5180-a104-11eb-9dc0-43120e0f571a.png)
 
 - Is Dont Destroy On Load
-  Scene切り替え時のEventSystemBotを破棄したくない場合は有効にする必要があります。
+  Scene切り替え時の`Event System Bot`を破棄したくない場合は有効にする必要があります。
 
 ### Remote Player
 
@@ -190,7 +190,7 @@ Sceneを跨いでEventSystemBotを使用する為のコンポーネントです�
 
 <img width="426" alt="RemoteClient" src="https://user-images.githubusercontent.com/29646672/116061453-d48d6c80-a6bd-11eb-93f5-2dcfc7384654.png">
 
-UnityPlayer(実機)上のEventSystemBotをUnityEditorから制御する為のWindowです。
+UnityPlayer(実機)上の`Event System Bot`をUnityEditorから制御する為のWindowです。
 
 ① Refleshボタン。Player上のUnityBotKunの情報を取得します。</br>
 ② イベントスクリプト実行ボタン。④で指定されたイベントスクリプトを実行/停止を行います。
@@ -217,10 +217,10 @@ UnityPlayer(実機)上のEventSystemBotをUnityEditorから制御する為のWin
 - A</br>`InpurRecorder`はInputのみを記録しています。処理落ちや乱数など、結果に対して様々な要員がある為、同じ結果にならない場合があります。
 
 - Q</br>イベントスクリプトを実行しても、Inputが反映されません。
-- A</br>他の`EventSystem`が有効になっている可能性があります。実行時に`EventSystemBot`以外の`EventSystem`が`Scene`上に存在しないか確認してみて下さい。また、`Standalone Iput Module Override`の`Force Module Active`を有効にすることで改善する可能性があります。
+- A</br>他の`Event System`が有効になっている可能性があります。実行時に`Event System Bot`以外の`Event System`が`Scene`上に存在しないか確認してみて下さい。また、`Standalone Iput Module Override`の`Force Module Active`を有効にすることで改善する可能性があります。
 
 - Q</br>`uGUI`にはタッチやマウスのクリックが反応しますが、3D等他のオブジェクトに反応しません。
-- A</br>`EventSystem`を利用している為、`MonoBehaviour.OnMouseXXX`系のイベントは発生しません。[IPointerEnterHandler](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.IPointerEnterHandler.html)を継承する等してイベントをキャッチして下さい。また、Cameraオブジェクトに[PhysicsRaycaster](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.PhysicsRaycaster.html)や[Physics2DRaycaster](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.Physics2DRaycaster.html)をAddすることもお忘れなく。
+- A</br>`Event System`を利用している為、`MonoBehaviour.OnMouseXXX`系のイベントは発生しません。[IPointerEnterHandler](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.IPointerEnterHandler.html)を継承する等してイベントをキャッチして下さい。また、Cameraオブジェクトに[PhysicsRaycaster](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.PhysicsRaycaster.html)や[Physics2DRaycaster](https://docs.unity3d.com/ja/2018.4/ScriptReference/EventSystems.Physics2DRaycaster.html)をAddすることもお忘れなく。
 
 [^1]:リリース済みのアプリケーションを制御出来る訳ではありません。）
 [^2]:Input単体での再現の為、再現性の精度は低いです。
