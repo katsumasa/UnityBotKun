@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Utj.UnityBotKun
 {
@@ -21,6 +23,12 @@ namespace Utj.UnityBotKun
         {
             get;
             set;            
+        }
+
+        public string Name
+        {
+            get;
+            private set;
         }
 
 
@@ -52,7 +60,11 @@ namespace Utj.UnityBotKun
         {
             Position = 0;
             lines = new List<string>();
-
+#if UNITY_EDITOR
+            Name = AssetDatabase.GetAssetPath(textAsset);
+#else
+            Name = textAsset.name + ".txt";            
+#endif
             using (var ms = new MemoryStream(textAsset.bytes))
             {
                 using (var sr = new StreamReader(ms))
