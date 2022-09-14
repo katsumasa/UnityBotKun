@@ -393,7 +393,7 @@ namespace Utj.UnityBotKun
                 {
                     if (BaseInputOverride.instance != null)
                     {                        
-                        Play();
+                        Play(m_currentScriptIndex);
                         break;
                     }
                     else
