@@ -601,7 +601,7 @@ namespace Utj.UnityBotKun
                     m_waitSceneChanged = GetInt(args[2]);
                 }
             }            
-            return false;
+            return true;
         }
 
 
@@ -619,7 +619,7 @@ namespace Utj.UnityBotKun
             }
             else
             {
-                Debug.Log("Invalid Label :" + args);
+                Debug.LogError("Invalid Label :" + args[1]);
                 isError = true;
                 return false;
             }
@@ -667,7 +667,7 @@ namespace Utj.UnityBotKun
             }
             else
             {
-                Debug.Log("Invalid variable name : " + args[1]);
+                Debug.LogError("Invalid variable name : " + args[1]);
                 isError = true;
                 return false;
             }
@@ -701,7 +701,8 @@ namespace Utj.UnityBotKun
             else
             {
                 isError = true;
-                Debug.Log("Invalid args in add "+ args);
+                Debug.LogError("Invalid args in add "+ args[1]);
+                return false;
             }
             return true;
         }
@@ -721,6 +722,12 @@ namespace Utj.UnityBotKun
             else if (variableFloats.ContainsKey(args[1]))
             {
                 variableFloats[args[1]] -= GetFloat(args[2]) - GetFloat(args[3]);
+            }
+            else
+            {
+                isError = true;
+                Debug.LogError("Invalid args in Sub " + args[1]);
+                return false;
             }
             return true;
         }
@@ -744,7 +751,7 @@ namespace Utj.UnityBotKun
             else
             {
                 isError = true;
-                Debug.Log("Invalid args in Mul " + args);
+                Debug.LogError("Invalid args in Mul " + args[1]);
                 return false;
             }
             return true;
@@ -769,7 +776,7 @@ namespace Utj.UnityBotKun
             else
             {
                 isError = true;
-                Debug.Log("Invalid args in div " + args);
+                Debug.LogError("Invalid args in div " + args[1]);                
                 return false;
             }
             return true;
@@ -1182,7 +1189,7 @@ namespace Utj.UnityBotKun
             }
             else
             {
-                Debug.Log("Invalid Command Name "+ args[0]);
+                Debug.LogError("Invalid Command Name "+ args[0]);
                 isError = true;
                 return false;
             }            
@@ -1246,6 +1253,11 @@ namespace Utj.UnityBotKun
 
                 // 構文解析
                 if (SyntaxAnalysis(args) == false) {
+                    isPlay = false;
+                    break;
+                }
+                if (m_waitFrame > 0 || (m_waitTime > 0f) || m_waitSceneChanged > 0)
+                {
                     break;
                 }
             }
@@ -1386,10 +1398,11 @@ namespace Utj.UnityBotKun
 
 
 
-
+                var lineNo = 0;
                 while (!m_textAssetReader.EndOfStream)
                 {
                     var line = m_textAssetReader.ReadLine();
+                    lineNo++;
                     if (line == null)
                     {
                         break;
@@ -1398,7 +1411,14 @@ namespace Utj.UnityBotKun
                     {
                         //var args = line.Split(new char[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
                         var args = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                        labelOfsts.Add(args[1], m_textAssetReader.Position);
+                        if (args.Length == 2)
+                        {
+                            labelOfsts.Add(args[1], m_textAssetReader.Position);
+                        }
+                        else
+                        {                                                        
+                            Debug.LogError($@"<a href=""{m_textAssetReader.Name}"" line=""{lineNo}"">{m_textAssetReader.Name}:{lineNo}</a> Invalid Label format {line}");
+                        }
                     }
                     else if (line.StartsWith("int"))
                     {
