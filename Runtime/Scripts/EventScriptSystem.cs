@@ -1206,7 +1206,7 @@ namespace Utj.UnityBotKun
                 return;
             }            
             
-            if ((m_isStop) ||(m_textAssetReader == null) || (m_textAssetReader.EndOfStream))
+            if (m_isStop)
             {
                 isPlay = false;
                 BaseInputOverride.instance.isOverrideInput = m_overrideInputBackup;
@@ -1217,6 +1217,13 @@ namespace Utj.UnityBotKun
             m_waitTime -= deltaTime;
             if (m_waitFrame > 0 || (m_waitTime > 0f) || m_waitSceneChanged > 0)
             {
+                return;
+            }
+
+            if((m_textAssetReader == null) || (m_textAssetReader.EndOfStream))
+            {
+                isPlay = false;
+                BaseInputOverride.instance.isOverrideInput = m_overrideInputBackup;
                 return;
             }
 
